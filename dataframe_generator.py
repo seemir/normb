@@ -50,7 +50,7 @@ class DataFrameGenerator:
         limits  : tuple
                   (lower, upper) limit of values to be generated in df
         sample  : tuple of integers, integer
-                  dimensions or range of numbers in generated df
+                  dimensions or range of numbers in generated df, default is (30, 30)
         excel   : boolean
                   indicating if one wants to output to excel
         filename: string
@@ -63,8 +63,8 @@ class DataFrameGenerator:
 
         """
         np.random.seed(self.seed)
-        row, col = limits
-        df = pd.DataFrame(np.random.uniform(row, col, sample))
+        lower, upper = limits
+        df = pd.DataFrame(np.random.uniform(lower, upper, sample))
 
         if excel:
             self._to_excel(df, filename)
@@ -83,7 +83,7 @@ class DataFrameGenerator:
         sigma   : integer, float
                   standard deviation
         sample  : tuple of integers, integer
-                  dimensions of df to be produced
+                  dimensions of df to be produced, default is (30, 30)
         excel   : boolean
                   indicating if one wants to output to excel
         filename: string
@@ -113,7 +113,7 @@ class DataFrameGenerator:
         limits  : tuple
                   (lower, upper) limit of values to be generated in df
         sample  : tuple of integers, integer
-                  dimensions of df to be produced
+                  dimensions of df to be produced, default is (30, 30)
         excel   : boolean
                   indicating if one wants to output to excel
         filename: string
