@@ -106,6 +106,8 @@ class DataFrameGenerator:
         """
         Generates a df with an equal mix of uniformly and normally distributed values.
 
+        Parameters
+        ----------
         mu      : integer, float
                   mean value
         sigma   : integer, float
