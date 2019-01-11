@@ -15,11 +15,16 @@ class DataFrameGenerator:
 
         Parameters
         ----------
-        seed    : int, float
+        seed    : int
                   User can set a seed parameter to generate deterministic,
                   non-random output
 
         """
+        try:
+            seed = int(seed)
+        except Exception:
+            raise TypeError(
+                "seed must be of type: 'int', got '{}'".format(type(seed).__name__))
         self.seed = seed
 
     @staticmethod
