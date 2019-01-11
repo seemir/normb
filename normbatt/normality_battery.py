@@ -7,6 +7,7 @@ from scipy.stats import jarque_bera, normaltest, shapiro, kstest
 from prettytable import PrettyTable
 from bisect import bisect_left
 import pandas as pd
+import os
 
 
 class NormalityBattery:
@@ -110,7 +111,7 @@ class NormalityBattery:
                       ' DataFrame(df)'
         return str(table)
 
-    def print_report(self, filename="NormalityReport.txt", directory="data/"):
+    def print_report(self, filename="NormalityReport.txt", file_dir="reports/"):
         """
         Method that prints a report containing the results of the Normality tests
 
@@ -118,5 +119,16 @@ class NormalityBattery:
         ----------
         filename    : str
                       name of file to be produced
+        file_dir    : str
+                      directory to save the file
 
         """
+        try:
+            if not os.path.exists(file_dir):
+                os.mkdir(file_dir)
+        except OSError as oe:
+            raise OSError("creation of dir " + file_dir + " failed with: " + str(oe))
+
+        file = open(os.path.join(file_dir, filename), "w")
+        file.write(self.check_normality())
+        file.close()

@@ -9,5 +9,6 @@ from normbatt.normality_battery import NormalityBattery
 if __name__ == '__main__':
     seed = 90210
     ini_df = DataFrameGenerator(seed)
-    results = NormalityBattery(ini_df.normal_data_frame())
+    results = NormalityBattery(ini_df.mixed_data_frame())
+    print(results.check_normality())
     results.print_report()
