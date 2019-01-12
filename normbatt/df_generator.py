@@ -21,7 +21,8 @@ class DataFrameGenerator:
 
         """
         try:
-            seed = int(seed)
+            if seed is not None:
+                seed = int(seed)
         except Exception:
             raise TypeError(
                 "seed must be of type: 'int', got '{}'".format(type(seed).__name__))

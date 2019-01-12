@@ -65,11 +65,10 @@ class NormalityBattery:
         """
         return "x".join(str(dim) for dim in self.df.shape)
 
-    def check_normality(self, dim='col', digits=5):
+    def check_univariate_normality(self, dim='col', digits=5):
         """
-        Checks to see if the values in the rows or columns of a dataframe are normally distributed
-        using Anderson-Darling, Jarque-Bera, D’Agostino / Pearson’s, Kolmogorov–Smirnov and
-        Shapiro-Wilk.
+        Checks to see if the values in the rows or columns of a dataframe are univariate normally
+        distributed using Jarque-Bera, D’Agostino / Pearson’s, Kolmogorov–Smirnov and Shapiro-Wilk.
 
         Parameters
         ----------
@@ -126,9 +125,9 @@ class NormalityBattery:
         try:
             if not os.path.exists(file_dir):
                 os.mkdir(file_dir)
-        except OSError as oe:
-            raise OSError("creation of dir " + file_dir + " failed with: " + str(oe))
+        except Exception as e:
+            raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
         file = open(os.path.join(file_dir, filename), "w")
-        file.write(self.check_normality())
+        file.write(self.check_univariate_normality())
         file.close()
