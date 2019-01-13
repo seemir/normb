@@ -4,6 +4,7 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from scipy.stats import jarque_bera, normaltest, shapiro, kstest
+from normbatt.df_generator import DataFrameGenerator
 from prettytable import PrettyTable
 from bisect import bisect_left
 import pandas as pd
@@ -30,7 +31,7 @@ class NormalityBattery:
         self.df = df
 
     @staticmethod
-    def _astrix(p_value):
+    def astrix(p_value):
         """
         Method for producing correct astrix notation given a p-value
 
@@ -44,10 +45,7 @@ class NormalityBattery:
                   correct astrix notation
 
         """
-        try:
-            p_value = float(p_value)
-        except Exception:
-            raise TypeError("p_val must be of type 'float', got {}".format(type(p_value).__name__))
+        DataFrameGenerator.evaluate_data_type({p_value: float})
 
         sign_limit = [0.0001, 0.001, 0.01, 0.05, ]
         sign_stars = ['****', '***', '**', '*', '']
@@ -84,6 +82,8 @@ class NormalityBattery:
                   table containing test-statistic and p-value of row/col vectors
 
         """
+        DataFrameGenerator.evaluate_data_type({dim: str, digits: int})
+
         table = PrettyTable(vrules=2)
         rnd, d = round, digits
 
@@ -101,10 +101,10 @@ class NormalityBattery:
             ks, p_ks = kstest(vector, cdf='norm')
             sw, p_sw = shapiro(vector)
             table.add_row([rnd(i + 1, d),
-                           rnd(jb, d), "{}{}".format(rnd(p_jb, d), self._astrix(rnd(p_jb, d))),
-                           rnd(k2, d), "{}{}".format(rnd(p_pr, d), self._astrix(rnd(p_pr, d))),
-                           rnd(ks, d), "{}{}".format(rnd(p_ks, d), self._astrix(rnd(p_ks, d))),
-                           rnd(sw, d), "{}{}".format(rnd(p_sw, d), self._astrix(rnd(p_sw, d)))])
+                           rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
+                           rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
+                           rnd(ks, d), "{}{}".format(rnd(p_ks, d), self.astrix(rnd(p_ks, d))),
+                           rnd(sw, d), "{}{}".format(rnd(p_sw, d), self.astrix(rnd(p_sw, d)))])
             table.align = "r"
         table.title = 'Normality test of ' + dim_name + ' vectors in a ' + self.get_dimensions() + \
                       ' DataFrame(df)'
@@ -122,6 +122,8 @@ class NormalityBattery:
                       directory to save the file
 
         """
+        DataFrameGenerator.evaluate_data_type({filename: str, file_dir: str})
+
         try:
             if not os.path.exists(file_dir):
                 os.mkdir(file_dir)

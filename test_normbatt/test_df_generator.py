@@ -35,7 +35,8 @@ class TestDfGenerator:
 
     def test_dataframe_seed_type(self):
         """
-        Test that TypeError is thrown when invalid datatype seed is passed to DataFrameGenerator()
+        Test that TypeError is thrown when invalid datatype seed is passed to
+        DataFrameGenerator()
 
         """
         seeds = [{}, [], (), 'test', True]
@@ -48,3 +49,12 @@ class TestDfGenerator:
 
         """
         assert self.dfg.seed == self.seed
+        assert self.dfg.seed == 123456789
+
+    def test_evaluate_data_type(self):
+        """
+        Test that the evaluate_data_type method produces TypeError
+
+        """
+        arg = 'test'
+        pt.raises(TypeError, self.dfg.evaluate_data_type({arg: list}))

@@ -19,26 +19,27 @@ class DataFrameGenerator:
                   User can set a seed parameter to generate deterministic, non-random output
 
         """
-        self.evaluate_data_type(seed, int)
+        self.evaluate_data_type({seed: int})
         self.seed = seed
 
     @staticmethod
-    def evaluate_data_type(obj, t):
+    def evaluate_data_type(arg_dict):
         """
         Method that evaluates the type of an object. Raises TypeError if not match.
 
         Parameters
         ----------
-        obj : object to be evaluated
-        t   : correct type
+        arg_dict    : dictionary
+                      dict of arg: type to be evaluated
 
         """
-        try:
-            if obj is not None:
-                obj = t(obj)
-        except Exception:
-            raise TypeError(
-                "Expected type '{}', got '{}' instead".format(t.__name__, type(obj).__name__))
+        for arg, t in arg_dict.items():
+            try:
+                if arg is not None:
+                    arg = t(arg)
+            except Exception:
+                raise TypeError(
+                    "Expected type '{}', got '{}' instead".format(t.__name__, type(arg).__name__))
 
     def to_excel(self, df=None, filename="ExcelDataFrame.xlsx"):
         """
@@ -53,8 +54,7 @@ class DataFrameGenerator:
 
         """
         args = {df: pd.DataFrame, filename: str}
-        for arg, t in args.items():
-            self.evaluate_data_type(arg, t)
+        self.evaluate_data_type(args)
 
         engine = 'xlsxwriter'
         with pd.ExcelWriter("{}.xlsx".format(filename), engine=engine) as writer:
@@ -83,11 +83,11 @@ class DataFrameGenerator:
                   n x 1 (if sample is integer) or n x m (if sample is tuple) dimensional df
 
         """
-        args = {limits: tuple, sample: tuple, filename: str}
-        for arg, t in args.items():
-            self.evaluate_data_type(arg, t)
-
         np.random.seed(self.seed)
+
+        args = {limits: tuple, sample: tuple, filename: str}
+        self.evaluate_data_type(args)
+
         lower, upper = limits
         df = pd.DataFrame(np.random.uniform(lower, upper, sample))
 
@@ -120,11 +120,11 @@ class DataFrameGenerator:
                   n x 1 (if sample is integer) or n x m (if sample is tuple) dimensional df
 
         """
-        args = {mu: int, sigma: int, sample: tuple, filename: str}
-        for arg, t in args.items():
-            self.evaluate_data_type(arg, t)
-
         np.random.seed(self.seed)
+
+        args = {mu: int, sigma: int, sample: tuple, filename: str}
+        self.evaluate_data_type(args)
+
         df = pd.DataFrame(np.random.normal(mu, sigma, sample))
         if excel:
             self.to_excel(df, filename)
@@ -156,9 +156,10 @@ class DataFrameGenerator:
                   n x 1 (if sample is integer) or n x m (if sample is tuple) dimensional df
 
         """
+        np.random.seed(self.seed)
+
         args = {mu: int, sigma: int, limits: tuple, sample: tuple, filename: str}
-        for arg, t in args.items():
-            self.evaluate_data_type(arg, t)
+        self.evaluate_data_type(args)
 
         original_df = self.uniform_data_frame(limits, sample)
         mixed_df = original_df.append(self.normal_data_frame(mu, sigma, sample),
