@@ -1,4 +1,5 @@
 from normbatt.df_generator import DataFrameGenerator
+import numpy as np
 import pandas as pd
 import pytest as pt
 
@@ -51,6 +52,17 @@ class TestDfGenerator:
         assert self.dfg.seed == self.seed
         assert self.dfg.seed == 123456789
 
+    def test_seed_produces_same_df(self):
+        """
+        Test that the seed configured produces the same df
+
+        """
+        test_seed = 90210
+        test_df = DataFrameGenerator(test_seed)
+        test_df = np.array(test_df.uniform_data_frame(sample=(2, 2)))
+        correct_df = np.array([[19.23366508, 92.51010224], [39.57834764, 78.56387572]])
+        pt.approx(correct_df, test_df)
+
     def test_evaluate_data_type(self):
         """
         Test that the evaluate_data_type method produces TypeError
@@ -58,3 +70,15 @@ class TestDfGenerator:
         """
         arg = 'test'
         pt.raises(TypeError, self.dfg.evaluate_data_type({arg: list}))
+
+    def test_mocker(self, mocker):
+        """
+        Mocker of calls to methods in DataFrameGenerator
+
+        """
+        methods = ['uniform_data_frame', 'normal_data_frame', 'mixed_data_frame']
+        for method in methods:
+            mocker.spy(DataFrameGenerator, method)
+            df = DataFrameGenerator()
+            df_method = getattr(df, method)()
+            assert getattr(DataFrameGenerator, method).call_count == 1
