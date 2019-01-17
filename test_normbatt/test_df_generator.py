@@ -34,7 +34,7 @@ class TestDfGenerator:
         for dataframe in self.drs.values():
             assert isinstance(dataframe, pd.DataFrame)
 
-    def test_dataframe_seed_type(self):
+    def test_dataframe_seed_type_error(self):
         """
         Test that TypeError is thrown when invalid datatype seed is passed to
         DataFrameGenerator()
