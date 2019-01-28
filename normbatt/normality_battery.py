@@ -3,11 +3,11 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from scipy.stats import jarque_bera, normaltest, shapiro, kstest, kurtosis, skew
-from numpy import mean, var, std, median, min, max, quantile
 from normbatt.df_generator import DataFrameGenerator
 from prettytable import PrettyTable
 from bisect import bisect_left
+import scipy.stats as stats
+import numpy as np
 import pandas as pd
 import os
 
@@ -86,7 +86,7 @@ class NormalityBattery:
                   table containing test-statistic and p-value of row/col vectors
 
         """
-        DataFrameGenerator.evaluate_data_type({dim: str, digits: int})
+        DataFrameGenerator.evaluate_data_type({dim: str, digits: int, ds: bool})
 
         norm_table, desc_table = PrettyTable(vrules=2), PrettyTable(vrules=2)
         rnd, d = round, digits
@@ -112,18 +112,18 @@ class NormalityBattery:
         for i, vector in vectors:
             if ds:
                 desc_row = [rnd(i + 1, d),
-                            rnd(mean(vector), d), rnd(median(vector), d),
-                            rnd(var(vector), d), rnd(std(vector), d),
-                            rnd(kurtosis(vector), d), rnd(skew(vector), d),
+                            rnd(np.mean(vector), d), rnd(np.median(vector), d),
+                            rnd(np.var(vector), d), rnd(np.std(vector), d),
+                            rnd(stats.kurtosis(vector), d), rnd(stats.skew(vector), d),
                             rnd(min(vector), d), rnd(max(vector), d),
-                            rnd(quantile(vector, 0.95), d)]
+                            rnd(np.quantile(vector, 0.95), d)]
                 desc_table.add_row(desc_row)
                 desc_table.align = "r"
 
-            jb, p_jb = jarque_bera(vector)
-            k2, p_pr, = normaltest(vector)
-            ks, p_ks = kstest(vector, cdf='norm')
-            sw, p_sw = shapiro(vector)
+            jb, p_jb = stats.jarque_bera(vector)
+            k2, p_pr, = stats.normaltest(vector)
+            ks, p_ks = stats.kstest(vector, cdf='norm')
+            sw, p_sw = stats.shapiro(vector)
             norm_row = [rnd(i + 1, d),
                         rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
                         rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
@@ -153,7 +153,8 @@ class NormalityBattery:
                       indicating if one wants additional columns with descriptive
                       statistics of the data
         """
-        DataFrameGenerator.evaluate_data_type({filename: str, file_dir: str})
+        DataFrameGenerator.evaluate_data_type(
+            {filename: str, file_dir: str, dim: str, digits: int, ds: bool})
 
         try:
             if not os.path.exists(file_dir):
