@@ -4,10 +4,10 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from scipy.stats import jarque_bera, normaltest, shapiro, kstest, kurtosis, skew
+from numpy import mean, var, std, median, min, max, quantile
 from normbatt.df_generator import DataFrameGenerator
 from prettytable import PrettyTable
 from bisect import bisect_left
-from numpy import mean, std
 import pandas as pd
 import os
 
@@ -88,49 +88,58 @@ class NormalityBattery:
         """
         DataFrameGenerator.evaluate_data_type({dim: str, digits: int})
 
-        table = PrettyTable(vrules=2)
+        norm_table, desc_table = PrettyTable(vrules=2), PrettyTable(vrules=2)
         rnd, d = round, digits
-
         dim_name = 'col' if dim == 'col' else 'row'
-        header_names = [dim_name,
-                        'jb', 'p-value (jb)',
-                        'k2', 'p-value (k2)',
-                        'ks', 'p-value (ks)',
-                        'sw', 'p-value (sw)']
+
         if ds:
-            new_headers = ['mean', 'stdev', 'kurtosis', 'skewness']
-            for header in new_headers:
-                header_names.append(header)
-        table.field_names = header_names
+            decs_header_names = [dim_name,
+                                 'mean', 'median',
+                                 'variance', 'stdev',
+                                 'kurtosis', 'skewness',
+                                 'min', 'max',
+                                 'quant (95%)']
+            desc_table.field_names = decs_header_names
+
+        norm_header_names = [dim_name,
+                             'jb', 'p-value (jb)',
+                             'k2', 'p-value (k2)',
+                             'ks', 'p-value (ks)',
+                             'sw', 'p-value (sw)']
+        norm_table.field_names = norm_header_names
 
         vectors = self.df.iteritems() if dim == "col" else self.df.iterrows()
-
         for i, vector in vectors:
+            if ds:
+                desc_row = [rnd(i + 1, d),
+                            rnd(mean(vector), d), rnd(median(vector), d),
+                            rnd(var(vector), d), rnd(std(vector), d),
+                            rnd(kurtosis(vector), d), rnd(skew(vector), d),
+                            rnd(min(vector), d), rnd(max(vector), d),
+                            rnd(quantile(vector, 0.95), d)]
+                desc_table.add_row(desc_row)
+                desc_table.align = "r"
+
             jb, p_jb = jarque_bera(vector)
             k2, p_pr, = normaltest(vector)
             ks, p_ks = kstest(vector, cdf='norm')
             sw, p_sw = shapiro(vector)
-            row = [rnd(i + 1, d),
-                   rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
-                   rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
-                   rnd(ks, d), "{}{}".format(rnd(p_ks, d), self.astrix(rnd(p_ks, d))),
-                   rnd(sw, d), "{}{}".format(rnd(p_sw, d), self.astrix(rnd(p_sw, d)))]
+            norm_row = [rnd(i + 1, d),
+                        rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
+                        rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
+                        rnd(ks, d), "{}{}".format(rnd(p_ks, d), self.astrix(rnd(p_ks, d))),
+                        rnd(sw, d), "{}{}".format(rnd(p_sw, d), self.astrix(rnd(p_sw, d)))]
 
-            if ds:
-                statistics = [rnd(mean(vector), d),
-                              rnd(std(vector), d),
-                              rnd(kurtosis(vector), d),
-                              rnd(skew(vector), d)]
-                for statistic in statistics:
-                    row.append(statistic)
+            norm_table.add_row(norm_row)
+            norm_table.align = "r"
 
-            table.add_row(row)
-            table.align = "r"
-        table.title = 'Normality test of ' + dim_name + ' vectors in a ' + self.get_dimensions() + \
-                      ' DataFrame(df)'
-        return str(table)
+        desc_table.title = 'Descriptive statistics ' + self.get_dimensions() + ' DataFrame(df)'
+        norm_table.title = 'Normality test ' + self.get_dimensions() + ' DataFrame(df)'
 
-    def print_report(self, filename="NormalityReport.txt", file_dir="reports/", ds=False):
+        return list(map(str, [desc_table, norm_table])) if ds else str(norm_table)
+
+    def print_report(self, filename="NormalityReport.txt", file_dir="reports/", dim='col', digits=5,
+                     ds=False):
         """
         Method that prints a report containing the results of the Normality tests
 
@@ -140,9 +149,9 @@ class NormalityBattery:
                       name of file to be produced
         file_dir    : str
                       directory to save the file
-        ds      : bool
-                  indicating if one wants additional columns with descriptive
-                  statistics of the data
+        ds          : bool
+                      indicating if one wants additional columns with descriptive
+                      statistics of the data
         """
         DataFrameGenerator.evaluate_data_type({filename: str, file_dir: str})
 
@@ -153,5 +162,9 @@ class NormalityBattery:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
         file = open(os.path.join(file_dir, filename), "w")
-        file.write(self.check_univariate_normality(ds=ds))
+        if ds:
+            file.write(self.check_univariate_normality(dim, digits, ds=ds)[0] + '\n')
+            file.write(self.check_univariate_normality(dim, digits, ds=ds)[1])
+        else:
+            file.write(self.check_univariate_normality(dim, digits, ds=ds))
         file.close()
