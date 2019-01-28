@@ -3,10 +3,11 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from scipy.stats import jarque_bera, normaltest, shapiro, kstest
+from scipy.stats import jarque_bera, normaltest, shapiro, kstest, kurtosis, skew
 from normbatt.df_generator import DataFrameGenerator
 from prettytable import PrettyTable
 from bisect import bisect_left
+from numpy import mean, std
 import pandas as pd
 import os
 
@@ -63,7 +64,7 @@ class NormalityBattery:
         """
         return "x".join(str(dim) for dim in self.df.shape)
 
-    def check_univariate_normality(self, dim='col', digits=5):
+    def check_univariate_normality(self, dim='col', digits=5, ds=False):
         """
         Checks to see if the values in the rows or columns of a dataframe are univariate normally
         distributed using Jarque-Bera, D’Agostino / Pearson’s, Kolmogorov–Smirnov and Shapiro-Wilk.
@@ -75,6 +76,9 @@ class NormalityBattery:
                   'row', default is 'col'
         digits  : integer
                   number of decimal places to round down
+        ds      : bool
+                  indicating if one wants additional columns with descriptive
+                  statistics of the data
 
         Returns
         -------
@@ -88,11 +92,17 @@ class NormalityBattery:
         rnd, d = round, digits
 
         dim_name = 'col' if dim == 'col' else 'row'
-        table.field_names = [dim_name,
-                             'jb', 'p-value (jb)',
-                             'k2', 'p-value (k2)',
-                             'ks', 'p-value (ks)',
-                             'sw', 'p-value (sw)']
+        header_names = [dim_name,
+                        'jb', 'p-value (jb)',
+                        'k2', 'p-value (k2)',
+                        'ks', 'p-value (ks)',
+                        'sw', 'p-value (sw)']
+        if ds:
+            new_headers = ['mean', 'stdev', 'kurtosis', 'skewness']
+            for header in new_headers:
+                header_names.append(header)
+        table.field_names = header_names
+
         vectors = self.df.iteritems() if dim == "col" else self.df.iterrows()
 
         for i, vector in vectors:
@@ -100,17 +110,27 @@ class NormalityBattery:
             k2, p_pr, = normaltest(vector)
             ks, p_ks = kstest(vector, cdf='norm')
             sw, p_sw = shapiro(vector)
-            table.add_row([rnd(i + 1, d),
-                           rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
-                           rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
-                           rnd(ks, d), "{}{}".format(rnd(p_ks, d), self.astrix(rnd(p_ks, d))),
-                           rnd(sw, d), "{}{}".format(rnd(p_sw, d), self.astrix(rnd(p_sw, d)))])
+            row = [rnd(i + 1, d),
+                   rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
+                   rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
+                   rnd(ks, d), "{}{}".format(rnd(p_ks, d), self.astrix(rnd(p_ks, d))),
+                   rnd(sw, d), "{}{}".format(rnd(p_sw, d), self.astrix(rnd(p_sw, d)))]
+
+            if ds:
+                statistics = [rnd(mean(vector), d),
+                              rnd(std(vector), d),
+                              rnd(kurtosis(vector), d),
+                              rnd(skew(vector), d)]
+                for statistic in statistics:
+                    row.append(statistic)
+
+            table.add_row(row)
             table.align = "r"
         table.title = 'Normality test of ' + dim_name + ' vectors in a ' + self.get_dimensions() + \
                       ' DataFrame(df)'
         return str(table)
 
-    def print_report(self, filename="NormalityReport.txt", file_dir="reports/"):
+    def print_report(self, filename="NormalityReport.txt", file_dir="reports/", ds=False):
         """
         Method that prints a report containing the results of the Normality tests
 
@@ -120,7 +140,9 @@ class NormalityBattery:
                       name of file to be produced
         file_dir    : str
                       directory to save the file
-
+        ds      : bool
+                  indicating if one wants additional columns with descriptive
+                  statistics of the data
         """
         DataFrameGenerator.evaluate_data_type({filename: str, file_dir: str})
 
@@ -131,5 +153,5 @@ class NormalityBattery:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
         file = open(os.path.join(file_dir, filename), "w")
-        file.write(self.check_univariate_normality())
+        file.write(self.check_univariate_normality(ds=ds))
         file.close()
