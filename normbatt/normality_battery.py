@@ -77,8 +77,8 @@ class NormalityBattery:
         digits  : integer
                   number of decimal places to round down
         ds      : bool
-                  indicating if one wants additional columns with descriptive
-                  statistics of the data
+                  indicating if one wants additional table with descriptive statistics
+                  of the data
 
         Returns
         -------
@@ -149,8 +149,13 @@ class NormalityBattery:
                       name of file to be produced
         file_dir    : str
                       directory to save the file
+        dim         : string
+                      indicate whether one wants to test for normality along the columns
+                      'col' or rows 'row', default is 'col'
+        digits      : integer
+                      number of decimal places to round down
         ds          : bool
-                      indicating if one wants additional columns with descriptive
+                      indicating if one wants additional table with descriptive
                       statistics of the data
         """
         DataFrameGenerator.evaluate_data_type(
