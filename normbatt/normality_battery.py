@@ -4,6 +4,7 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.df_generator import DataFrameGenerator
+from normbatt.pdf_writer import PDFWriter
 from prettytable import PrettyTable
 from bisect import bisect_left
 import scipy.stats as stats
@@ -139,7 +140,7 @@ class NormalityBattery:
         return list(map(str, [desc_table, norm_table])) if ds else str(norm_table)
 
     def print_report(self, filename="NormalityReport.txt", file_dir="reports/", dim='col', digits=5,
-                     ds=False):
+                     ds=False, pdf=False):
         """
         Method that prints a report containing the results of the Normality tests
 
@@ -171,6 +172,15 @@ class NormalityBattery:
         if ds:
             file.write(self.check_univariate_normality(dim, digits, ds=ds)[0] + '\n')
             file.write(self.check_univariate_normality(dim, digits, ds=ds)[1])
+            if pdf:  # TODO: Fix this shit!
+                pw = PDFWriter()
+                pw.set_font('Courier', 8.5)
+                pw.set_header('Normality Report')
+                pw.set_footer('Version 0.0.1')
+                for lines in self.check_univariate_normality(dim, digits, ds=ds)[0]:
+                    for line in lines.split('n'):
+                        pw.write_line(line)
+                pw.close()
         else:
             file.write(self.check_univariate_normality(dim, digits, ds=ds))
         file.close()
