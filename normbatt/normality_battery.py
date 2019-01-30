@@ -14,10 +14,14 @@ import os
 
 
 class NormalityBattery:
+    """
+    Battery of univariate normality tests on row or column vectors of pandas.DataFrame
+
+    """
 
     def __init__(self, df):
         """
-        Initiate the class
+        Constructor / Initiate the class
 
         Parameters
         ----------
@@ -162,6 +166,9 @@ class NormalityBattery:
         norm_table.title = 'Normality test ' + self.get_dimensions() + ' DataFrame(df)'
         return str(norm_table)
 
+    def print_multivariate_normality(self, digits=5):
+        pass
+
     def print_report(self, file_name="NormalityReport.txt", file_dir="reports/", dim='col',
                      digits=5, ds=False, pdf=False):
         """
@@ -186,7 +193,7 @@ class NormalityBattery:
 
         """
         DataFrameGenerator.evaluate_data_type(
-            {file_name: str, file_dir: str, dim: str, digits: int, ds: bool})
+            {file_name: str, file_dir: str, dim: str, digits: int, ds: bool, pdf: bool})
 
         try:
             if not os.path.exists(file_dir):
@@ -195,7 +202,6 @@ class NormalityBattery:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
         file = open(os.path.join(file_dir, file_name), "w")
-        # TODO: Everything below needs refactoring asap, i.e. to much is hardcoded!
         if ds:
             file.write(self.print_descriptive_statistics(dim, digits) + '\n')
             file.write(self.print_univariate_normality(dim, digits))
