@@ -3,8 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.df_generator import DataFrameGenerator
-from normbatt.pdf_writer import PDFWriter
+from normbatt.util.df_generator import DataFrameGenerator
+from normbatt.util.pdf_writer import PDFWriter
 from prettytable import PrettyTable
 from bisect import bisect_left
 import scipy.stats as stats

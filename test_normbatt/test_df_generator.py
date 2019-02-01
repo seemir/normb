@@ -1,4 +1,4 @@
-from normbatt.df_generator import DataFrameGenerator
+from normbatt.util.df_generator import DataFrameGenerator
 import numpy as np
 import pandas as pd
 import pytest as pt

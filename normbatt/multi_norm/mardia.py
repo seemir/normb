@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.df_generator import DataFrameGenerator
+from normbatt.util.df_generator import DataFrameGenerator
 from sklearn.preprocessing import scale
 from scipy.stats import chi2, norm
 import pandas as pd
@@ -16,7 +16,7 @@ class Mardia:
 
     """
 
-    def __init__(self, df, cov=True, tol=1e-25):
+    def __init__(self, df, cov=True):
         """
         Constructor / Initiate the class
 
@@ -38,7 +38,6 @@ class Mardia:
 
         self.df = df
         self.cov = cov
-        self.tol = tol
         self.n = self.df.shape[0]
         self.p = self.df.shape[1]
 
@@ -76,8 +75,8 @@ class Mardia:
                   D matrix as pandas.DataFrame
 
         """
-        center = self.center_data().to_numpy()
-        invers = np.linalg.inv(self.calculate_sigma())
+        center = np.matrix(self.center_data().to_numpy())
+        invers = np.linalg.inv(np.matrix(self.calculate_sigma()))
         transp = np.matrix.transpose(center)
         return pd.DataFrame(center @ invers @ transp)
 
@@ -140,11 +139,5 @@ class Mardia:
 
         kurt = (self.calculate_g_coeff()['g2'] - self.p * (self.p + 2)) * np.sqrt(
             self.n / (8 * self.p * (self.p + 2)))
-        p_kurt = 2 * (norm.pdf(abs(kurt)))
+        p_kurt = norm.pdf(abs(kurt))
         return skew, p_skew, kurt, p_kurt
-
-
-m = pd.DataFrame(np.array([2, 3, 5, 6, 3, 2, 5, 5, 2]).reshape((3, 3)))
-
-m_test = Mardia(m, cov=True)
-print(m_test.calculate_d())

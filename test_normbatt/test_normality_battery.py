@@ -1,5 +1,5 @@
 from normbatt.normality_battery import NormalityBattery
-from normbatt.df_generator import DataFrameGenerator
+from normbatt.util.df_generator import DataFrameGenerator
 import pytest as pt
 
 
