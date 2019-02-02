@@ -25,7 +25,9 @@ class Mardia:
         df      : pandas.DataFrame
                   df to be analysed
         cov     : bool
-                  indicating if adjusted covariance matrix is to be used
+                  indicating if normalized covariance matrix is to be used.
+                  If True matrix is normalized by n, else False normalized by (n-1),
+                  default is True
 
         """
         try:

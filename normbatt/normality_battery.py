@@ -5,6 +5,7 @@ __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.util.df_generator import DataFrameGenerator
 from normbatt.util.pdf_writer import PDFWriter
+from normbatt.multi_norm.mardia import Mardia
 from prettytable import PrettyTable
 from bisect import bisect_left
 import scipy.stats as stats
@@ -127,7 +128,7 @@ class NormalityBattery:
                   indicate whether one wants to test for normality along the columns 'col' or rows
                   'row', default is 'col'
         digits  : integer
-                  number of decimal places to round down
+                  number of decimal places to round down results
 
         Returns
         -------
@@ -163,11 +164,47 @@ class NormalityBattery:
             norm_table.add_row(norm_row)
             norm_table.align = "r"
 
-        norm_table.title = 'Normality test ' + self.get_dimensions() + ' DataFrame(df)'
+        norm_table.title = 'Univariate Normality test ' + self.get_dimensions() + ' DataFrame(df)'
         return str(norm_table)
 
-    def print_multivariate_normality(self, digits=5):
-        pass
+    def print_multivariate_normality(self, digits=5, cov=True):
+        """
+        Check to see if values of numeric DataFrame follows a multivariate normal distribution
+
+        Parameters
+        ----------
+        digits  : integer
+                  number of decimal places to round down results
+        cov     : bool
+                  indicating if normalized covariance matrix is to be used.
+                  If True matrix is normalized by n, else False normalized by (n-1),
+                  default is True
+
+        Returns
+        -------
+        Out     : str
+                  string containing test-statistic and p-value of row/col vectors
+
+        """
+        DataFrameGenerator.evaluate_data_type({digits: int})
+
+        multi_norm_table = PrettyTable(vrules=2)
+        rnd, d = round, digits
+
+        multi_norm_header_name = ['', 'skew', 'p-value (skew)', 'kurt', 'p-value (kurt)']
+        multi_norm_table.field_names = multi_norm_header_name
+
+        mardia = Mardia(self.df, cov)
+        multi_norm_row = ['mardia',
+                          rnd(mardia.print_results()[0], d),
+                          rnd(mardia.print_results()[1], d),
+                          rnd(mardia.print_results()[2], d),
+                          rnd(mardia.print_results()[3], d)]
+        multi_norm_table.add_row(multi_norm_row)
+        multi_norm_table.align = "r"
+
+        multi_norm_table.title = 'Multivariate Normality test ' + self.get_dimensions() + ' DataFrame(df)'
+        return str(multi_norm_table)
 
     def print_report(self, file_name="NormalityReport.txt", file_dir="reports/", dim='col',
                      digits=5, ds=False, pdf=False):
@@ -204,6 +241,7 @@ class NormalityBattery:
         file = open(os.path.join(file_dir, file_name), "w")
         if ds:
             file.write(self.print_descriptive_statistics(dim, digits) + '\n')
+            file.write(self.print_multivariate_normality(digits) + '\n')
             file.write(self.print_univariate_normality(dim, digits))
             if pdf:
                 pw = PDFWriter(file_name[:-4] + '.pdf', file_dir)
@@ -214,6 +252,7 @@ class NormalityBattery:
                     pw.write_line(line)
                 pw.close()
         else:
+            file.write(self.print_multivariate_normality(digits) + '\n')
             file.write(self.print_univariate_normality(dim, digits))
             if pdf:
                 pw = PDFWriter(file_name[:-4] + '.pdf', file_dir)
