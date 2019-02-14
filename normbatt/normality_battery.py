@@ -6,6 +6,7 @@ __email__ = 'samir.adrik@gmail.com'
 from normbatt.util.df_generator import DataFrameGenerator
 from normbatt.util.pdf_writer import PDFWriter
 from normbatt.multi_norm.mardia import Mardia
+from normbatt.multi_norm.henze_zirkler import HenzeZirkler
 from prettytable import PrettyTable
 from bisect import bisect_left
 import scipy.stats as stats
@@ -167,7 +168,7 @@ class NormalityBattery:
         norm_table.title = 'Univariate Normality test ' + self.get_dimensions() + ' DataFrame(df)'
         return str(norm_table)
 
-    def print_multivariate_normality(self, digits=5, cov=True):
+    def print_multivariate_normality(self, digits=5):
         """
         Check to see if values of numeric DataFrame follows a multivariate normal distribution
 
@@ -175,10 +176,6 @@ class NormalityBattery:
         ----------
         digits  : integer
                   number of decimal places to round down results
-        cov     : bool
-                  indicating if normalized covariance matrix is to be used.
-                  If True matrix is normalized by n, else False normalized by (n-1),
-                  default is True
 
         Returns
         -------
@@ -191,19 +188,33 @@ class NormalityBattery:
         multi_norm_table = PrettyTable(vrules=2)
         rnd, d = round, digits
 
-        multi_norm_header_name = ['', 'skew', 'p-value (skew)', 'kurt', 'p-value (kurt)']
+        multi_norm_header_name = ['', 't1', 'p-value (t1)', 't2', 'p-value (t2)']
         multi_norm_table.field_names = multi_norm_header_name
 
-        mardia = Mardia(self.df, cov)
-        multi_norm_row = ['mardia',
-                          rnd(mardia.print_results()[0], d),
-                          rnd(mardia.print_results()[1], d),
-                          rnd(mardia.print_results()[2], d),
-                          rnd(mardia.print_results()[3], d)]
-        multi_norm_table.add_row(multi_norm_row)
+        mardia = Mardia(self.df)
+        hz = HenzeZirkler(self.df)
+
+        # Add Mardia results
+        multi_norm_mardia_row = ['mardia',
+                                 rnd(mardia.print_results()[0], d),
+                                 rnd(mardia.print_results()[1], d),
+                                 rnd(mardia.print_results()[2], d),
+                                 rnd(mardia.print_results()[3], d),
+                                 ]
+        multi_norm_table.add_row(multi_norm_mardia_row)
+
+        # Add HZ results
+        multi_norm_hz_row = ['hz',
+                             rnd(hz.print_results()[0], d),
+                             rnd(hz.print_results()[1], d),
+                             '', ''
+                             ]
+        multi_norm_table.add_row(multi_norm_hz_row)
+
         multi_norm_table.align = "r"
 
-        multi_norm_table.title = 'Multivariate Normality test ' + self.get_dimensions() + ' DataFrame(df)'
+        multi_norm_table.title = 'Multivariate Normality test ' + self.get_dimensions() + \
+                                 ' DataFrame(df)'
         return str(multi_norm_table)
 
     def print_report(self, file_name="NormalityReport.txt", file_dir="reports/", dim='col',
@@ -248,6 +259,8 @@ class NormalityBattery:
                 pw.set_font('Courier', 8.5)
                 for line in self.print_descriptive_statistics(dim, digits).split('\n'):
                     pw.write_line(line)
+                for line in self.print_multivariate_normality(digits).split('\n'):
+                    pw.write_line(line)
                 for line in self.print_univariate_normality(dim, digits).split('\n'):
                     pw.write_line(line)
                 pw.close()
@@ -257,6 +270,8 @@ class NormalityBattery:
             if pdf:
                 pw = PDFWriter(file_name[:-4] + '.pdf', file_dir)
                 pw.set_font('Courier', 8.5)
+                for line in self.print_multivariate_normality(digits).split('\n'):
+                    pw.write_line(line)
                 for line in self.print_univariate_normality(dim, digits).split('\n'):
                     pw.write_line(line)
                 pw.close()

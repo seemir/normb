@@ -95,7 +95,7 @@ class DataFrameGenerator:
             self.to_excel(df, filename)
         return df
 
-    def normal_data_frame(self, mu=0, sigma=1, sample=(30, 30), excel=None,
+    def normal_data_frame(self, mu=0, sigma=1, sample=(30, 30), excel=False,
                           filename='ExcelDF.xlsx'):
         """
         Method that produces a df containing normally distributed floating point values with mean

@@ -9,5 +9,5 @@ from normbatt.normality_battery import NormalityBattery
 if __name__ == '__main__':
     seed = 90210
     ini_df = DataFrameGenerator(seed)
-    results = NormalityBattery(ini_df.uniform_data_frame())
-    results.print_report()
+    results = NormalityBattery(ini_df.normal_data_frame())
+    results.print_report(pdf=True)

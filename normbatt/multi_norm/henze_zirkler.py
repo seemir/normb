@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 
-class Mardia:
+class HenzeZirkler:
 
     def __init__(self, df):
         """
@@ -28,29 +28,26 @@ class Mardia:
                             ", got {}".format(type(df).__name__))
         self.df = numpy2ri(np.array(df, dtype=float))
 
-    def run_mardia_test(self):
+    def run_hz_test(self):
         """
-        Runs the Mardia test by using the MVN module in r
+        Runs the Henze-Zirkler test by running the nvm test from r
 
         """
         r('library("MVN")')
         r.assign("df", self.df)
-        r('res <- mvn(df, mvnTest = "mardia")')
+        r('res <- mvn(df, mvnTest = "hz")')
 
     def print_results(self):
         """
-        Gets the mardia test statistics and p-values
+        Gets the hz test statistic and p-value
 
         Returns
         -------
         Out     : tuple
-                  (mardia_skew test statistic, p-value,
-                   mardia_kurt test statistic, p-value)
+                  (hz test statistic, p-value)
 
         """
-        self.run_mardia_test()
-        m_skew = r('as.numeric(as.vector(res$multivariateNormality[1, "Statistic"]))')
-        p_skew = r('as.numeric(as.vector(res$multivariateNormality[1, "p value"]))')
-        m_kurt = r('as.numeric(as.vector(res$multivariateNormality[2, "Statistic"]))')
-        p_kurt = r('as.numeric(as.vector(res$multivariateNormality[2, "p value"]))')
-        return tuple(list(m_skew) + list(p_skew) + list(m_kurt) + list(p_kurt))
+        self.run_hz_test()
+        hz = r('as.numeric(res$multivariateNormality["HZ"])')
+        p_hz = r('as.numeric(res$multivariateNormality["p value"])')
+        return tuple(list(hz) + list(p_hz))
