@@ -7,6 +7,7 @@ from normbatt.util.df_generator import DataFrameGenerator
 from normbatt.util.pdf_writer import PDFWriter
 from normbatt.multi_norm.mardia import Mardia
 from normbatt.multi_norm.henze_zirkler import HenzeZirkler
+from normbatt.multi_norm.royston import Royston
 from prettytable import PrettyTable
 from bisect import bisect_left
 import scipy.stats as stats
@@ -193,6 +194,7 @@ class NormalityBattery:
 
         mardia = Mardia(self.df)
         hz = HenzeZirkler(self.df)
+        roy = Royston(self.df)
 
         # Add Mardia results
         multi_norm_mardia_row = ['mardia',
@@ -203,6 +205,14 @@ class NormalityBattery:
                                  ]
         multi_norm_table.add_row(multi_norm_mardia_row)
 
+        # Add Royston results
+        multi_norm_roy_row = ['royston',
+                              rnd(roy.print_results()[0], d),
+                              rnd(roy.print_results()[1], d),
+                              '', ''
+                              ]
+        multi_norm_table.add_row(multi_norm_roy_row)
+
         # Add HZ results
         multi_norm_hz_row = ['hz',
                              rnd(hz.print_results()[0], d),
@@ -210,9 +220,7 @@ class NormalityBattery:
                              '', ''
                              ]
         multi_norm_table.add_row(multi_norm_hz_row)
-
         multi_norm_table.align = "r"
-
         multi_norm_table.title = 'Multivariate Normality test ' + self.get_dimensions() + \
                                  ' DataFrame(df)'
         return str(multi_norm_table)

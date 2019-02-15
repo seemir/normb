@@ -30,7 +30,8 @@ class HenzeZirkler:
 
     def run_hz_test(self):
         """
-        Runs the Henze-Zirkler test by running the nvm test from r
+        Runs the Henze-Zirkler test for multivariate normality by delegating the task to the
+        MVN module in r
 
         """
         r('library("MVN")')
