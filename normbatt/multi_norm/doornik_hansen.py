@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 
-class Royston:
+class DoornikHansen:
 
     def __init__(self, df):
         """
@@ -28,27 +28,29 @@ class Royston:
                             ", got {}".format(type(df).__name__))
         self.df = numpy2ri(np.array(df, dtype=float))
 
-    def run_royston_test(self):
+    def run_dh_test(self):
         """
-        Runs the Royston test for multivariate normality by delegating the task to the
+        Runs the Doornik-Hansen test for multivariate normality by delegating the task to the
         MVN module in r
 
         """
         r('library("MVN")')
         r.assign("df", self.df)
-        r('res <- mvn(df, mvnTest = "royston")')
+        r('res <- mvn(df, mvnTest = "dh")')
 
     def print_results(self):
         """
-        Gets the Royston test statistic and p-value
+        Gets the dh test statistic and p-value
 
         Returns
         -------
         Out     : tuple
-                  (royston test statistic, p-value)
+                  (dh test statistic, p-value)
 
         """
-        self.run_royston_test()
-        roy = r('as.numeric(res$multivariateNormality["H"])')
-        p_roy = r('as.numeric(res$multivariateNormality["p value"])')
-        return tuple(list(roy) + list(p_roy))
+
+        # TODO: Fix bug, returns nan when data is normally distributed
+        self.run_dh_test()
+        dh = r('as.numeric(res$multivariateNormality["E"])')
+        p_dh = r('as.numeric(res$multivariateNormality["p value"])')
+        return tuple(list(dh) + list(p_dh))
