@@ -9,6 +9,7 @@ from normbatt.multi_norm.mardia import Mardia
 from normbatt.multi_norm.henze_zirkler import HenzeZirkler
 from normbatt.multi_norm.royston import Royston
 from normbatt.multi_norm.doornik_hansen import DoornikHansen
+from normbatt.multi_norm.energy import Energy
 from prettytable import PrettyTable
 from bisect import bisect_left
 import scipy.stats as stats
@@ -197,6 +198,7 @@ class NormalityBattery:
         roys = Royston(self.df)
         hen_zir = HenzeZirkler(self.df)
         door_hans = DoornikHansen(self.df)
+        energy = Energy(self.df)
 
         # Add Mardia results
         multi_norm_mardia_row = ['mardia',
@@ -230,6 +232,15 @@ class NormalityBattery:
                              '', ''
                              ]
         multi_norm_table.add_row(multi_norm_dh_row)
+
+        # Add E statistic results
+        multi_norm_e_row = ['energy',
+                            rnd(energy.print_results()[0], d),
+                            rnd(energy.print_results()[1], d),
+                            '', ''
+                            ]
+        multi_norm_table.add_row(multi_norm_e_row)
+
         multi_norm_table.align = "r"
         multi_norm_table.title = 'Multivariate Normality test ' + self.get_dimensions() + \
                                  ' DataFrame(df)'
