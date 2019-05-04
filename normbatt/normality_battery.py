@@ -3,17 +3,11 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.df_generator import DataFrameGenerator
+from normbatt.util.generators.mn_generator import MultivariateNormalityGenerator
+from normbatt.util.generators.un_generator import UnivariateNormalityGenerator
+from normbatt.util.generators.df_generator import DataFrameGenerator
+from normbatt.util.generators.ds_generator import DsGenerator
 from normbatt.util.pdf_writer import PDFWriter
-from normbatt.multi_norm.mardia import Mardia
-from normbatt.multi_norm.henze_zirkler import HenzeZirkler
-from normbatt.multi_norm.royston import Royston
-from normbatt.multi_norm.doornik_hansen import DoornikHansen
-from normbatt.multi_norm.energy import Energy
-from prettytable import PrettyTable
-from bisect import bisect_left
-import scipy.stats as stats
-import numpy as np
 import pandas as pd
 import os
 
@@ -40,27 +34,6 @@ class NormalityBattery:
             raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
                             ", got {}".format(type(df).__name__))
         self.df = df
-
-    @staticmethod
-    def astrix(p_value):
-        """
-        Method for producing correct astrix notation given a p-value
-
-        Parameters
-        ----------
-        p_value   : float
-                    p-value to be looked-up
-        Returns
-        -------
-        Out     : string
-                  correct astrix notation
-
-        """
-        DataFrameGenerator.evaluate_data_type({p_value: float})
-
-        sign_limit = [0.0001, 0.001, 0.01, 0.05, ]
-        sign_stars = ['****', '***', '**', '*', '']
-        return sign_stars[bisect_left(sign_limit, p_value)]
 
     def get_dimensions(self):
         """
@@ -92,34 +65,8 @@ class NormalityBattery:
                   string containing descriptive statistics
 
         """
-        DataFrameGenerator.evaluate_data_type({dim: str, digits: int})
-
-        desc_table = PrettyTable(vrules=2)
-        rnd, d = round, digits
-        dim_name = 'col' if dim == 'col' else 'row'
-
-        decs_header_names = [dim_name,
-                             'mean', 'median',
-                             'variance', 'stdev',
-                             'kurtosis', 'skewness',
-                             'min', 'max',
-                             'quant (95%)']
-        desc_table.field_names = decs_header_names
-
-        vectors = self.df.iteritems() if dim == "col" else self.df.iterrows()
-
-        for i, vector in vectors:
-            desc_row = [rnd(i + 1, d),
-                        rnd(np.mean(vector), d), rnd(np.median(vector), d),
-                        rnd(np.var(vector), d), rnd(np.std(vector), d),
-                        rnd(stats.kurtosis(vector), d), rnd(stats.skew(vector), d),
-                        rnd(min(vector), d), rnd(max(vector), d),
-                        rnd(np.quantile(vector, 0.95), d)]
-            desc_table.add_row(desc_row)
-            desc_table.align = "r"
-
-        desc_table.title = 'Descriptive statistics ' + self.get_dimensions() + ' DataFrame(df)'
-        return str(desc_table)
+        ds = DsGenerator(self.df, dim=dim, digits=digits)
+        return ds.generate_desciptive_statistics()
 
     def print_univariate_normality(self, dim='col', digits=5):
         """
@@ -140,36 +87,8 @@ class NormalityBattery:
                   string containing test-statistic and p-value of row/col vectors
 
         """
-        DataFrameGenerator.evaluate_data_type({dim: str, digits: int})
-
-        norm_table = PrettyTable(vrules=2)
-        rnd, d = round, digits
-        dim_name = 'col' if dim == 'col' else 'row'
-
-        norm_header_names = [dim_name,
-                             'jb', 'p-value (jb)',
-                             'k2', 'p-value (k2)',
-                             'ks', 'p-value (ks)',
-                             'sw', 'p-value (sw)']
-        norm_table.field_names = norm_header_names
-
-        vectors = self.df.iteritems() if dim == "col" else self.df.iterrows()
-        for i, vector in vectors:
-            jb, p_jb = stats.jarque_bera(vector)
-            k2, p_pr, = stats.normaltest(vector)
-            ks, p_ks = stats.kstest(vector, cdf='norm')
-            sw, p_sw = stats.shapiro(vector)
-            norm_row = [rnd(i + 1, d),
-                        rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
-                        rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
-                        rnd(ks, d), "{}{}".format(rnd(p_ks, d), self.astrix(rnd(p_ks, d))),
-                        rnd(sw, d), "{}{}".format(rnd(p_sw, d), self.astrix(rnd(p_sw, d)))]
-
-            norm_table.add_row(norm_row)
-            norm_table.align = "r"
-
-        norm_table.title = 'Univariate Normality test ' + self.get_dimensions() + ' DataFrame(df)'
-        return str(norm_table)
+        un = UnivariateNormalityGenerator(self.df, dim=dim, digits=digits)
+        return un.generate_univariate_normality_results()
 
     def print_multivariate_normality(self, digits=5):
         """
@@ -186,65 +105,8 @@ class NormalityBattery:
                   string containing test-statistic and p-value of row/col vectors
 
         """
-        DataFrameGenerator.evaluate_data_type({digits: int})
-
-        multi_norm_table = PrettyTable(vrules=2)
-        rnd, d = round, digits
-
-        multi_norm_header_name = ['', 't1', 'p-value (t1)', 't2', 'p-value (t2)']
-        multi_norm_table.field_names = multi_norm_header_name
-
-        mardia = Mardia(self.df)
-        roys = Royston(self.df)
-        hen_zir = HenzeZirkler(self.df)
-        door_hans = DoornikHansen(self.df)
-        energy = Energy(self.df)
-
-        # Add Mardia results
-        multi_norm_mardia_row = ['mardia',
-                                 rnd(mardia.print_results()[0], d),
-                                 rnd(mardia.print_results()[1], d),
-                                 rnd(mardia.print_results()[2], d),
-                                 rnd(mardia.print_results()[3], d),
-                                 ]
-        multi_norm_table.add_row(multi_norm_mardia_row)
-
-        # Add Royston results
-        multi_norm_roy_row = ['royston',
-                              rnd(roys.print_results()[0], d),
-                              rnd(roys.print_results()[1], d),
-                              '', ''
-                              ]
-        multi_norm_table.add_row(multi_norm_roy_row)
-
-        # Add HZ results
-        multi_norm_hz_row = ['henze-zirkler',
-                             rnd(hen_zir.print_results()[0], d),
-                             rnd(hen_zir.print_results()[1], d),
-                             '', ''
-                             ]
-        multi_norm_table.add_row(multi_norm_hz_row)
-
-        # Add DH results
-        multi_norm_dh_row = ['doornik-hansen',
-                             rnd(door_hans.print_results()[0], d),
-                             rnd(door_hans.print_results()[1], d),
-                             '', ''
-                             ]
-        multi_norm_table.add_row(multi_norm_dh_row)
-
-        # Add E statistic results
-        multi_norm_e_row = ['energy',
-                            rnd(energy.print_results()[0], d),
-                            rnd(energy.print_results()[1], d),
-                            '', ''
-                            ]
-        multi_norm_table.add_row(multi_norm_e_row)
-
-        multi_norm_table.align = "r"
-        multi_norm_table.title = 'Multivariate Normality test ' + self.get_dimensions() + \
-                                 ' DataFrame(df)'
-        return str(multi_norm_table)
+        mn = MultivariateNormalityGenerator(self.df, digits=digits)
+        return mn.generate_multivariate_normality_results()
 
     def print_report(self, file_name="NormalityReport.txt", file_dir="reports/", dim='col',
                      digits=5, ds=False, pdf=False):

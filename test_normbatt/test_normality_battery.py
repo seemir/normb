@@ -1,5 +1,5 @@
 from normbatt.normality_battery import NormalityBattery
-from normbatt.util.df_generator import DataFrameGenerator
+from normbatt.util.generators import DataFrameGenerator
 import pytest as pt
 
 
@@ -16,14 +16,14 @@ class TestNormalityBattery:
         self.nb_normal = NormalityBattery(self.dfg.normal_data_frame())
         self.nb_mixed = NormalityBattery(self.dfg.mixed_data_frame())
 
-    def test_instance_data_frame_generator(self):
+    def test_all_dfg_are_of_instance_dataframegenerator(self):
         """
         Test correct dataframe generator type is created
 
         """
         assert isinstance(self.dfg, DataFrameGenerator)
 
-    def test_nb_instance(self):
+    def test_all_normalitybattery_instances_are_of_type_normalitybattery(self):
         """
         Test that all the normality battery instances are of type NormalityBattery()
 
@@ -32,7 +32,7 @@ class TestNormalityBattery:
         for nb in nbs:
             assert isinstance(nb, NormalityBattery)
 
-    def test_data_frame_type_error(self):
+    def test_typeerror_raised_when_invalid_data_type_is_instantiated(self):
         """
         Test that TypeError is raised if invalid data type is instantiated
 

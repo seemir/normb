@@ -1,0 +1,82 @@
+# -*- coding: utf-8 -*-
+
+__author__ = 'Samir Adrik'
+__email__ = 'samir.adrik@gmail.com'
+
+from normbatt.util.generators.abstract_generator import AbstractGenerator
+from prettytable import PrettyTable
+from bisect import bisect_left
+import scipy.stats as stats
+import pandas as pd
+
+
+class UnivariateNormalityGenerator(AbstractGenerator):
+
+    def __init__(self, df, dim, digits):
+        try:
+            df = pd.DataFrame(df)
+        except Exception:
+            raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
+                            ", got {}".format(type(df).__name__))
+        super().__init__(dim, digits)
+
+        self.evaluate_data_type({dim: str, digits: int})
+
+        self.df = df
+        self.dim = dim
+        self.digits = digits
+
+    @staticmethod
+    def astrix(p_value):
+        """
+        Method for producing correct astrix notation given a p-value
+
+        Parameters
+        ----------
+        p_value   : float
+                    p-value to be looked-up
+        Returns
+        -------
+        Out     : string
+                  correct astrix notation
+
+        """
+        try:
+            p_value = float(p_value)
+        except Exception:
+            raise TypeError(
+                "p_value must be of type 'float', got {}".format(type(p_value).__name__))
+
+        sign_limit = [0.0001, 0.001, 0.01, 0.05, ]
+        sign_stars = ['****', '***', '**', '*', '']
+        return sign_stars[bisect_left(sign_limit, p_value)]
+
+    def generate_univariate_normality_results(self):
+        unorm_table = PrettyTable(vrules=2)
+        rnd, d = round, self.digits
+        dim_name = 'col' if self.dim == 'col' else 'row'
+
+        norm_header_names = [dim_name,
+                             'jb', 'p-value (jb)',
+                             'k2', 'p-value (k2)',
+                             'ks', 'p-value (ks)',
+                             'sw', 'p-value (sw)']
+        unorm_table.field_names = norm_header_names
+
+        vectors = self.df.iteritems() if self.dim == "col" else self.df.iterrows()
+        for i, vector in vectors:
+            jb, p_jb = stats.jarque_bera(vector)
+            k2, p_pr, = stats.normaltest(vector)
+            ks, p_ks = stats.kstest(vector, cdf='norm')
+            sw, p_sw = stats.shapiro(vector)
+            norm_row = [rnd(i + 1, d),
+                        rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
+                        rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
+                        rnd(ks, d), "{}{}".format(rnd(p_ks, d), self.astrix(rnd(p_ks, d))),
+                        rnd(sw, d), "{}{}".format(rnd(p_sw, d), self.astrix(rnd(p_sw, d)))]
+
+            unorm_table.add_row(norm_row)
+            unorm_table.align = "r"
+
+        unorm_table.title = 'Univariate Normality test ' + self.get_dimensions() + ' DataFrame(df)'
+        return str(unorm_table)

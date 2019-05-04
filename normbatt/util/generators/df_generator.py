@@ -3,13 +3,14 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from normbatt.util.generators.abstract_generator import AbstractGenerator
 import pandas as pd
 import numpy as np
 
 
-class DataFrameGenerator:
+class DataFrameGenerator(AbstractGenerator):
 
-    def __init__(self, seed=None):
+    def __init__(self, seed):
         """
         Initiates the class
 
@@ -19,27 +20,8 @@ class DataFrameGenerator:
                   User can set a seed parameter to generate deterministic, non-random output
 
         """
+        super().__init__(seed)
         self.evaluate_data_type({seed: int})
-        self.seed = seed
-
-    @staticmethod
-    def evaluate_data_type(arg_dict):
-        """
-        Method that evaluates the type of an object. Raises TypeError if not match.
-
-        Parameters
-        ----------
-        arg_dict    : dictionary
-                      dict of arg: type to be evaluated
-
-        """
-        for arg, t in arg_dict.items():
-            try:
-                if arg is not None:
-                    arg = t(arg)
-            except Exception:
-                raise TypeError(
-                    "Expected type '{}', got '{}' instead".format(t.__name__, type(arg).__name__))
 
     def to_excel(self, df=None, filename="ExcelDataFrame.xlsx"):
         """
@@ -53,8 +35,7 @@ class DataFrameGenerator:
                   name of excel file
 
         """
-        args = {df: pd.DataFrame, filename: str}
-        self.evaluate_data_type(args)
+        self.evaluate_data_type({df: pd.DataFrame, filename: str})
 
         engine = 'xlsxwriter'
         with pd.ExcelWriter("{}.xlsx".format(filename), engine=engine) as writer:
@@ -83,6 +64,7 @@ class DataFrameGenerator:
                   n x 1 (if sample is integer) or n x m (if sample is tuple) dimensional df
 
         """
+        # TODO: non-deterministic values are generated when seed is configured
         np.random.seed(self.seed)
 
         args = {limits: tuple, sample: tuple, filename: str}
@@ -164,7 +146,7 @@ class DataFrameGenerator:
         original_df = self.uniform_data_frame(limits, sample)
         mixed_df = original_df.append(self.normal_data_frame(mu, sigma, sample),
                                       ignore_index=True)
-        df = mixed_df.apply(np.random.permutation)
+        df = mixed_df.apply(np.random.permutation).head(sample[0])
         if excel:
             self.to_excel(df, filename)
         return df
