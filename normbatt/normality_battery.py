@@ -3,10 +3,10 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from normbatt.util.generators.ds_generator import DescriptiveStatisticsGenerator
 from normbatt.util.generators.mn_generator import MultivariateNormalityGenerator
 from normbatt.util.generators.un_generator import UnivariateNormalityGenerator
 from normbatt.util.generators.df_generator import DataFrameGenerator
-from normbatt.util.generators.ds_generator import DsGenerator
 from normbatt.util.pdf_writer import PDFWriter
 import pandas as pd
 import os
@@ -24,7 +24,7 @@ class NormalityBattery:
 
         Parameters
         ----------
-        df      : pandas.core.frame.DataFrame
+        df      : pandas.DataFrame
                   Dataframe for which one wants to test for normality
 
         """
@@ -65,8 +65,8 @@ class NormalityBattery:
                   string containing descriptive statistics
 
         """
-        ds = DsGenerator(self.df, dim=dim, digits=digits)
-        return ds.generate_desciptive_statistics()
+        ds = DescriptiveStatisticsGenerator(self.df, dim=dim, digits=digits)
+        return ds.generate_descriptive_statistics()
 
     def print_univariate_normality(self, dim='col', digits=5):
         """

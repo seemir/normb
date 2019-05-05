@@ -3,13 +3,18 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from normbatt.multivariate_norm.abstract_normality_test import AbstractNormalityTest
 from rpy2.robjects.numpy2ri import numpy2ri
 from rpy2.robjects import r
 import numpy as np
 import pandas as pd
 
 
-class Royston:
+class Royston(AbstractNormalityTest):
+    """
+    Implements the Royston test for multivariate normality
+
+    """
 
     def __init__(self, df):
         """
@@ -21,12 +26,7 @@ class Royston:
                   df to be analysed
 
         """
-        try:
-            df = pd.DataFrame(df)
-        except Exception:
-            raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
-                            ", got {}".format(type(df).__name__))
-        self.df = numpy2ri(np.array(df, dtype=float))
+        super().__init__(df)
 
     def run_royston_test(self):
         """
@@ -34,8 +34,6 @@ class Royston:
         MVN module in r
 
         """
-        r('library("MVN")')
-        r.assign("df", self.df)
         r('res <- mvn(df, mvnTest = "royston")')
 
     def print_results(self):

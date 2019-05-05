@@ -10,23 +10,51 @@ import pandas as pd
 import numpy as np
 
 
-class DsGenerator(AbstractGenerator):
+class DescriptiveStatisticsGenerator(AbstractGenerator):
+    """
+    Class that generates descriptive statistics
+
+    """
 
     def __init__(self, df, dim, digits):
+        """
+        Constructor / Initiate the class
+
+        Parameters
+        ----------
+        df      : pandas.DataFrame
+                  Dataframe for which one wants to generate / test
+        dim     : string
+                  indicate whether one wants to test for normality along the columns 'col' or rows
+                  'row', default is 'col'
+        digits  : integer
+                  number of decimal places to round down
+
+        """
         try:
             df = pd.DataFrame(df)
         except Exception:
-            raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
-                            ", got {}".format(type(df).__name__))
+            raise TypeError(
+                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
 
-        super().__init__(dim, digits)
+        super().__init__(dim=dim, digits=digits)
         self.evaluate_data_type({dim: str, digits: int})
 
         self.df = df
         self.dim = dim
         self.digits = digits
 
-    def generate_desciptive_statistics(self):
+    def generate_descriptive_statistics(self):
+        """
+        Method that generates descriptive statistics from a pandas.DataFrame's column or row
+        vectors.
+
+        Returns
+        -------
+        Out     : str
+                  String of descriptive statistics
+
+        """
         desc_table = PrettyTable(vrules=2)
         rnd, d = round, self.digits
         dim_name = 'col' if self.dim == 'col' else 'row'

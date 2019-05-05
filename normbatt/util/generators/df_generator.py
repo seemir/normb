@@ -9,8 +9,13 @@ import numpy as np
 
 
 class DataFrameGenerator(AbstractGenerator):
+    """
+    Class that generates pandas.DataFrame with values of a given distribution, i.e. uniform,
+    normal or mixed.
 
-    def __init__(self, seed):
+    """
+
+    def __init__(self, seed=None):
         """
         Initiates the class
 
@@ -20,8 +25,8 @@ class DataFrameGenerator(AbstractGenerator):
                   User can set a seed parameter to generate deterministic, non-random output
 
         """
-        super().__init__(seed)
         self.evaluate_data_type({seed: int})
+        super().__init__(seed=seed)
 
     def to_excel(self, df=None, filename="ExcelDataFrame.xlsx"):
         """

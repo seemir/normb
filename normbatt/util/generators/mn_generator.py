@@ -14,20 +14,46 @@ import pandas as pd
 
 
 class MultivariateNormalityGenerator(AbstractGenerator):
+    """
+    Class that generates multivariate normality results
+
+    """
+
     def __init__(self, df, digits):
+        """
+        Constructor / Initiate the class
+
+        Parameters
+        ----------
+        df      : pandas.DataFrame
+                  Dataframe for which one wants to generate / test
+        digits  : integer
+                  number of decimal places to round down
+
+        """
         try:
             df = pd.DataFrame(df)
         except Exception:
             raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
                             ", got {}".format(type(df).__name__))
 
-        super().__init__(digits)
+        super().__init__(digits=digits)
         self.evaluate_data_type({digits: int})
 
         self.df = df
         self.digits = digits
 
     def generate_multivariate_normality_results(self):
+        """
+        Method that generates multivariate results from a pandas.DataFrame's column or row
+        vectors.
+
+        Returns
+        -------
+        Out     : str
+                  String of multivariate results
+
+        """
         self.evaluate_data_type({self.digits: int})
 
         multi_norm_table = PrettyTable(vrules=2)

@@ -5,6 +5,10 @@ __email__ = 'samir.adrik@gmail.com'
 
 
 class AbstractGenerator:
+    """
+    Superclass for which all generators are subclassed.
+
+    """
 
     @staticmethod
     def evaluate_data_type(arg_dict):
@@ -26,7 +30,21 @@ class AbstractGenerator:
                     "Expected type '{}', got '{}' instead".format(t.__name__, type(arg).__name__))
 
     def __init__(self, dim='col', digits=5, seed=None):
-        self.evaluate_data_type({dim: str, digits: int})
+        """
+        Constructor / Initiate the class
+
+        Parameters
+        ----------
+        dim     : string
+                  indicate whether one wants to test for normality along the columns 'col' or rows
+                  'row', default is 'col'
+        digits  : integer
+                  number of decimal places to round down
+        seed    : int
+                  User can set a seed parameter to generate deterministic, non-random output
+
+        """
+        self.evaluate_data_type({dim: str, digits: int, seed: int})
         self.dim = dim
         self.digits = digits
         self.seed = seed

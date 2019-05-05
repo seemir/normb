@@ -3,13 +3,15 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from rpy2.robjects.numpy2ri import numpy2ri
+from normbatt.multivariate_norm.abstract_normality_test import AbstractNormalityTest
 from rpy2.robjects import r
-import numpy as np
-import pandas as pd
 
 
-class DoornikHansen:
+class DoornikHansen(AbstractNormalityTest):
+    """
+    Implementation of the Doornik-Hansen test for multivariate normality
+
+    """
 
     def __init__(self, df):
         """
@@ -21,21 +23,15 @@ class DoornikHansen:
                   df to be analysed
 
         """
-        try:
-            df = pd.DataFrame(df)
-        except Exception:
-            raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
-                            ", got {}".format(type(df).__name__))
-        self.df = numpy2ri(np.array(df, dtype=float))
+        super().__init__(df)
 
-    def run_dh_test(self):
+    @staticmethod
+    def run_dh_test():
         """
         Runs the Doornik-Hansen test for multivariate normality by delegating the task to the
         MVN module in r
 
         """
-        r('library("MVN")')
-        r.assign("df", self.df)
         r('res <- mvn(df, mvnTest = "dh")')
 
     def print_results(self):
@@ -49,7 +45,6 @@ class DoornikHansen:
 
         """
 
-        # TODO: Fix bug, returns nan when data is normally distributed
         self.run_dh_test()
         dh = r('as.numeric(res$multivariateNormality["E"])')
         p_dh = r('as.numeric(res$multivariateNormality["p value"])')
