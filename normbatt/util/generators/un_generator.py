@@ -34,8 +34,8 @@ class UnivariateNormalityGenerator(AbstractGenerator):
         try:
             df = pd.DataFrame(df)
         except Exception:
-            raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
-                            ", got {}".format(type(df).__name__))
+            raise TypeError(
+                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
         super().__init__(dim=dim, digits=digits)
 
         self.evaluate_data_type({dim: str, digits: int})

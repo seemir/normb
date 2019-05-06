@@ -31,8 +31,8 @@ class NormalityBattery:
         try:
             df = pd.DataFrame(df)
         except Exception:
-            raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
-                            ", got {}".format(type(df).__name__))
+            raise TypeError(
+                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
         self.df = df
 
     def get_dimensions(self):
@@ -108,15 +108,12 @@ class NormalityBattery:
         mn = MultivariateNormalityGenerator(self.df, digits=digits)
         return mn.generate_multivariate_normality_results()
 
-    def print_report(self, file_name="NormalityReport", file_dir="reports/", dim='col',
-                     digits=5, ds=False):
+    def print_report(self, file_dir="reports/txt/", dim='col', digits=5, ds=False):
         """
         Method that prints a report containing the results of the Normality tests
 
         Parameters
         ----------
-        file_name    : str
-                      name of file to be produced
         file_dir    : str
                       directory to save the file
         dim         : string
@@ -129,8 +126,7 @@ class NormalityBattery:
                       statistics of the data
 
         """
-        DataFrameGenerator.evaluate_data_type(
-            {file_name: str, file_dir: str, dim: str, digits: int, ds: bool})
+        DataFrameGenerator.evaluate_data_type({file_dir: str, dim: str, digits: int, ds: bool})
 
         try:
             if not os.path.exists(file_dir):
@@ -139,7 +135,7 @@ class NormalityBattery:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
         local_time = datetime.datetime.now().isoformat().replace(":", "-").replace(".", "-")
-        file = open(os.path.join(file_dir, file_name + "_" + local_time + ".txt"), "w")
+        file = open(os.path.join(file_dir, "NormalityReport_" + local_time + ".txt"), "w")
         if ds:
             file.write(self.print_descriptive_statistics(dim, digits) + '\n')
             file.write(self.print_multivariate_normality(digits) + '\n')
