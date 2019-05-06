@@ -107,8 +107,8 @@ class NormalityBattery:
         mn = MultivariateNormalityGenerator(self.df, digits=digits)
         return mn.generate_multivariate_normality_results()
 
-    def print_report(self, file_name="NormalityReport.txt", file_dir="reports/", dim='col',
-                     digits=5, ds=False, pdf=False):
+    def print_report(self, file_name="NormalityReport", file_dir="reports/", dim='col',
+                     digits=5, ds=False):
         """
         Method that prints a report containing the results of the Normality tests
 
@@ -126,12 +126,10 @@ class NormalityBattery:
         ds          : bool
                       indicating if one wants additional table with descriptive
                       statistics of the data
-        pdf         : bool
-                      indicating whether one wants to print report as pdf
 
         """
         DataFrameGenerator.evaluate_data_type(
-            {file_name: str, file_dir: str, dim: str, digits: int, ds: bool, pdf: bool})
+            {file_name: str, file_dir: str, dim: str, digits: int, ds: bool})
 
         try:
             if not os.path.exists(file_dir):
@@ -139,7 +137,7 @@ class NormalityBattery:
         except Exception as e:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
-        file = open(os.path.join(file_dir, file_name), "w")
+        file = open(os.path.join(file_dir, file_name + "_" + str(id(file_name)) + ".txt"), "w")
         if ds:
             file.write(self.print_descriptive_statistics(dim, digits) + '\n')
             file.write(self.print_multivariate_normality(digits) + '\n')
