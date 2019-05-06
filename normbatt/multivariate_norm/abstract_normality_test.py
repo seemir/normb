@@ -25,11 +25,14 @@ class AbstractNormalityTest:
                   df to be analysed
 
         """
+        if type(self) == AbstractNormalityTest:
+            raise Exception("base class cannot be instantiated")
+
         try:
             df = pd.DataFrame(df)
         except Exception:
-            raise TypeError("df must be of type 'pandas.core.frame.DataFrame'"
-                            ", got {}".format(type(df).__name__))
+            raise TypeError(
+                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
 
         self.df = numpy2ri(np.array(df, dtype=float))
         r('library("MVN")')

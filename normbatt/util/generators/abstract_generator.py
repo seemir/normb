@@ -45,7 +45,7 @@ class AbstractGenerator:
 
         """
         if type(self) == AbstractGenerator:
-            raise Exception("base class may not be instantiated")
+            raise Exception("base class cannot be instantiated")
 
         self.evaluate_data_type({dim: str, digits: int, seed: int})
         self.dim = dim
