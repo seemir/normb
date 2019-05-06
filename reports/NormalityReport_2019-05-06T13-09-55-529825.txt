@@ -5,7 +5,7 @@
           mardia   4016.50847            1.0   -7.60055            0.0  
          royston    537.79835            0.0                            
    henze-zirkler        120.0            0.0                            
-  doornik-hansen      1.56739            1.0                            
+  doornik-hansen      1.56902            1.0                            
           energy          nan            nan                            
 ------------------------------------------------------------------------
                                 Univariate Normality test 30x30 DataFrame(df)                                

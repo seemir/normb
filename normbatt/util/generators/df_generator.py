@@ -46,7 +46,7 @@ class DataFrameGenerator(AbstractGenerator):
         with pd.ExcelWriter("{}.xlsx".format(filename), engine=engine) as writer:
             df.to_excel(writer)
 
-    def uniform_data_frame(self, limits=(0, 100), sample=(30, 30), excel=None,
+    def uniform_data_frame(self, limits=(-1, 1), sample=(30, 30), excel=None,
                            filename='ExcelDF.xlsx'):
         """
         Method that produces a df containing uniformly distributed floating point values between
@@ -116,7 +116,7 @@ class DataFrameGenerator(AbstractGenerator):
             self.to_excel(df, filename)
         return df
 
-    def mixed_data_frame(self, mu=0, sigma=1, limits=(0, 100), sample=(30, 30), excel=None,
+    def mixed_data_frame(self, mu=0, sigma=1, limits=(-1, 1), sample=(30, 30), excel=None,
                          filename='ExcelDF.xlsx'):
         """
         Generates a df with an equal mix of uniformly and normally distributed values.

@@ -8,6 +8,7 @@ from normbatt.util.generators.mn_generator import MultivariateNormalityGenerator
 from normbatt.util.generators.un_generator import UnivariateNormalityGenerator
 from normbatt.util.generators.df_generator import DataFrameGenerator
 import pandas as pd
+import datetime
 import os
 
 
@@ -137,7 +138,8 @@ class NormalityBattery:
         except Exception as e:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
-        file = open(os.path.join(file_dir, file_name + "_" + str(id(file_name)) + ".txt"), "w")
+        local_time = datetime.datetime.now().isoformat().replace(":", "-").replace(".", "-")
+        file = open(os.path.join(file_dir, file_name + "_" + local_time + ".txt"), "w")
         if ds:
             file.write(self.print_descriptive_statistics(dim, digits) + '\n')
             file.write(self.print_multivariate_normality(digits) + '\n')
