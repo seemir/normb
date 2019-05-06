@@ -44,6 +44,9 @@ class AbstractGenerator:
                   User can set a seed parameter to generate deterministic, non-random output
 
         """
+        if type(self) == AbstractGenerator:
+            raise Exception("base class may not be instantiated")
+
         self.evaluate_data_type({dim: str, digits: int, seed: int})
         self.dim = dim
         self.digits = digits

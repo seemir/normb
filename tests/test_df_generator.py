@@ -1,4 +1,5 @@
 from normbatt.util.generators.df_generator import DataFrameGenerator
+from normbatt.util.generators.abstract_generator import AbstractGenerator
 import numpy as np
 import pandas as pd
 import pytest as pt
@@ -14,9 +15,16 @@ class TestDfGenerator:
         """
         self.seed = 123456789
         self.dfg = DataFrameGenerator(self.seed)
-        self.dfs = {DataFrameGenerator.normal_data_frame: self.dfg.normal_data_frame(),
-                    DataFrameGenerator.uniform_data_frame: self.dfg.uniform_data_frame(),
-                    DataFrameGenerator.mixed_data_frame: self.dfg.mixed_data_frame()}
+        self.dfs = {"normal": self.dfg.normal_data_frame(),
+                    "uniform": self.dfg.uniform_data_frame(),
+                    "mixed": self.dfg.mixed_data_frame()}
+
+    def test_instances_are_subclass_of_abstract_generator(self):
+        """
+        Test the DataFrameGenerator instances are subtypes of AbstractGenerator
+
+        """
+        assert issubclass(self.dfg.__class__, AbstractGenerator)
 
     def test_instances_are_instance_and_type_dataframegenerator(self):
         """
@@ -26,7 +34,7 @@ class TestDfGenerator:
         assert isinstance(self.dfg, DataFrameGenerator)
         assert type(self.dfg) == DataFrameGenerator
 
-    def test_instances_of_given_distribution_are_instance_and_type_pandas_dataframe(self):
+    def test_instances_of_output_distribution_are_instance_and_type_pandas_dataframe(self):
         """
         Test that all df methods in DataFrameGenerator (normal, uniform, mixed) produce
         Pandas dataframes.
@@ -60,10 +68,10 @@ class TestDfGenerator:
 
         """
         test_seed = 90210
-        test_df = DataFrameGenerator(test_seed)
-        test_df = np.array(test_df.uniform_data_frame(sample=(2, 2)))
-        correct_df = np.array([[19.23366508, 92.51010224], [39.57834764, 78.56387572]])
-        pt.approx(correct_df, test_df)
+        test_df = DataFrameGenerator(test_seed).uniform_data_frame(sample=(2, 2))
+        correct_df = pd.DataFrame(
+            np.array([[19.23366508, 92.51010224], [39.57834764, 78.56387572]]))
+        pd.testing.assert_frame_equal(test_df, correct_df)
 
     def test_evaluate_data_type_method_throws_typeerror(self):
         """

@@ -7,7 +7,6 @@ from normbatt.util.generators.ds_generator import DescriptiveStatisticsGenerator
 from normbatt.util.generators.mn_generator import MultivariateNormalityGenerator
 from normbatt.util.generators.un_generator import UnivariateNormalityGenerator
 from normbatt.util.generators.df_generator import DataFrameGenerator
-from normbatt.util.pdf_writer import PDFWriter
 import pandas as pd
 import os
 
@@ -145,25 +144,7 @@ class NormalityBattery:
             file.write(self.print_descriptive_statistics(dim, digits) + '\n')
             file.write(self.print_multivariate_normality(digits) + '\n')
             file.write(self.print_univariate_normality(dim, digits))
-            if pdf:
-                pw = PDFWriter(file_name[:-4] + '.pdf', file_dir)
-                pw.set_font('Courier', 8.5)
-                for line in self.print_descriptive_statistics(dim, digits).split('\n'):
-                    pw.write_line(line)
-                for line in self.print_multivariate_normality(digits).split('\n'):
-                    pw.write_line(line)
-                for line in self.print_univariate_normality(dim, digits).split('\n'):
-                    pw.write_line(line)
-                pw.close()
         else:
             file.write(self.print_multivariate_normality(digits) + '\n')
             file.write(self.print_univariate_normality(dim, digits))
-            if pdf:
-                pw = PDFWriter(file_name[:-4] + '.pdf', file_dir)
-                pw.set_font('Courier', 8.5)
-                for line in self.print_multivariate_normality(digits).split('\n'):
-                    pw.write_line(line)
-                for line in self.print_univariate_normality(dim, digits).split('\n'):
-                    pw.write_line(line)
-                pw.close()
         file.close()

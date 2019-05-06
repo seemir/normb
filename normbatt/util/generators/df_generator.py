@@ -69,7 +69,6 @@ class DataFrameGenerator(AbstractGenerator):
                   n x 1 (if sample is integer) or n x m (if sample is tuple) dimensional df
 
         """
-        # TODO: non-deterministic values are generated when seed is configured
         np.random.seed(self.seed)
 
         args = {limits: tuple, sample: tuple, filename: str}
