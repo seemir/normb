@@ -35,5 +35,7 @@ class AbstractNormalityTest:
                 "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
 
         self.df = numpy2ri(np.array(df, dtype=float))
-        r('library("MVN")')
+        r('if (!is.element("MVN", installed.packages()[,1])){ '
+          'install.packages("MVN", dep = TRUE)}')
+        r('require("MVN", character.only = TRUE)')
         r.assign("df", self.df)
