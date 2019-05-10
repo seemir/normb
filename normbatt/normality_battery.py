@@ -35,18 +35,6 @@ class NormalityBattery:
                 "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
         self.df = df
 
-    def get_dimensions(self):
-        """
-        Gets the dimensions of the Dataframe initiated
-
-        Returns
-        -------
-        Out     : string
-                  dimensions of df
-
-        """
-        return "x".join(str(dim) for dim in self.df.shape)
-
     def print_descriptive_statistics(self, dim='col', digits=5):
         """
         Get string of descriptive statistics
