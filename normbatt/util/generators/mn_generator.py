@@ -31,13 +31,8 @@ class MultivariateNormalityGenerator(AbstractGenerator):
                   number of decimal places to round down
 
         """
-        try:
-            df = pd.DataFrame(df)
-        except Exception:
-            raise TypeError(
-                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
-
         super().__init__(digits=digits)
+        self.evaluate_pd_dataframe(df)
         self.evaluate_data_type({digits: int})
 
         self.df = df

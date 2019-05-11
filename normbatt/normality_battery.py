@@ -28,11 +28,7 @@ class NormalityBattery:
                   Dataframe for which one wants to test for normality
 
         """
-        try:
-            df = pd.DataFrame(df)
-        except Exception:
-            raise TypeError(
-                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
+        DataFrameGenerator.evaluate_pd_dataframe(df)
         self.df = df
 
     def print_descriptive_statistics(self, dim='col', digits=5):
@@ -96,7 +92,7 @@ class NormalityBattery:
         mn = MultivariateNormalityGenerator(self.df, digits=digits)
         return mn.generate_multivariate_normality_results()
 
-    def print_report(self, file_dir="reports/txt/", dim='col', digits=5, ds=False):
+    def print_report(self, file_dir="reports/txt", dim='col', digits=5, ds=False):
         """
         Method that prints a report containing the results of the Normality tests
 
@@ -118,7 +114,7 @@ class NormalityBattery:
 
         try:
             if not os.path.exists(file_dir):
-                os.mkdir(file_dir)
+                os.makedirs(file_dir)
         except Exception as e:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 

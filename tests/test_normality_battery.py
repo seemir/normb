@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+
+__author__ = 'Samir Adrik'
+__email__ = 'samir.adrik@gmail.com'
+
 from normbatt.normality_battery import NormalityBattery
 from normbatt.util.generators.df_generator import DataFrameGenerator
 import pytest as pt
@@ -11,7 +16,8 @@ class TestNormalityBattery:
         Executed before every test
 
         """
-        self.dfg = DataFrameGenerator()
+        self.seed = 90210
+        self.dfg = DataFrameGenerator(seed=self.seed)
         self.nb_uniform = NormalityBattery(self.dfg.uniform_data_frame())
         self.nb_normal = NormalityBattery(self.dfg.normal_data_frame())
         self.nb_mixed = NormalityBattery(self.dfg.mixed_data_frame())

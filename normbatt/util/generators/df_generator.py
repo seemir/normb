@@ -17,7 +17,7 @@ class DataFrameGenerator(AbstractGenerator):
 
     """
 
-    def __init__(self, seed=None):
+    def __init__(self, seed):
         """
         Initiates the class
 
@@ -30,8 +30,7 @@ class DataFrameGenerator(AbstractGenerator):
         self.evaluate_data_type({seed: int})
         super().__init__(seed=seed)
 
-    @staticmethod
-    def to_excel(df, file_dir="reports/xlsx/"):
+    def to_excel(self, df, file_dir="reports/xlsx"):
         """
         Method that converts dataframe (df) to Excel
 
@@ -43,23 +42,20 @@ class DataFrameGenerator(AbstractGenerator):
                   directory to save the file
 
         """
-        try:
-            df = pd.DataFrame(df)
-        except Exception:
-            raise TypeError(
-                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
+        self.evaluate_pd_dataframe(df)
+        self.evaluate_data_type({file_dir: str})
 
         local_time = datetime.datetime.now().isoformat().replace(":", "-").replace(".", "-")
-        filename = "ExcelDataFrame_" + local_time
+        filepath = os.path.join(file_dir, "ExcelDataFrame_" + local_time + ".xlsx")
         engine = 'xlsxwriter'
 
         try:
             if not os.path.exists(file_dir):
-                os.mkdir(file_dir)
+                os.makedirs(file_dir)
         except Exception as e:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
-        with pd.ExcelWriter("{}.xlsx".format(file_dir + filename), engine=engine) as writer:
+        with pd.ExcelWriter("{}".format(filepath), engine=engine) as writer:
             df.to_excel(writer)
 
     def uniform_data_frame(self, limits=(-1, 1), sample=(30, 30), excel=None):
@@ -73,7 +69,7 @@ class DataFrameGenerator(AbstractGenerator):
                   (lower, upper) limit of values to be generated in df
         sample  : tuple of integers, integer
                   dimensions or range of numbers in generated df, default is (30, 30)
-        excel   : boolean
+        excel   : bool
                   indicating if one wants to output to excel
 
         Returns
@@ -92,7 +88,7 @@ class DataFrameGenerator(AbstractGenerator):
             self.to_excel(df)
         return df
 
-    def normal_data_frame(self, mu=0, sigma=1, sample=(30, 30), excel=False):
+    def normal_data_frame(self, mu=0, sigma=1, sample=(30, 30), excel=None):
         """
         Method that produces a df containing normally distributed floating point values with mean
         equal 'mu' and st.dev equal 'sigma' and dimensions defined by 'sample'.
@@ -105,7 +101,7 @@ class DataFrameGenerator(AbstractGenerator):
                   standard deviation
         sample  : tuple of integers, integer
                   dimensions of df to be produced, default is (30, 30)
-        excel   : boolean
+        excel   : bool
                   indicating if one wants to output to excel
 
         Returns
@@ -136,7 +132,7 @@ class DataFrameGenerator(AbstractGenerator):
                   (lower, upper) limit of values to be generated in df
         sample  : tuple of integers, integer
                   dimensions of df to be produced, default is (30, 30)
-        excel   : boolean
+        excel   : bool
                   indicating if one wants to output to excel
 
         Returns

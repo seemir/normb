@@ -31,21 +31,15 @@ class UnivariateNormalityGenerator(AbstractGenerator):
                   number of decimal places to round down
 
         """
-        try:
-            df = pd.DataFrame(df)
-        except Exception:
-            raise TypeError(
-                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
         super().__init__(dim=dim, digits=digits)
-
+        self.evaluate_pd_dataframe(df)
         self.evaluate_data_type({dim: str, digits: int})
 
         self.df = df
         self.dim = dim
         self.digits = digits
 
-    @staticmethod
-    def astrix(p_value):
+    def astrix(self, p_value):
         """
         Method for producing correct astrix notation given a p-value
 
@@ -59,11 +53,7 @@ class UnivariateNormalityGenerator(AbstractGenerator):
                   correct astrix notation
 
         """
-        try:
-            p_value = float(p_value)
-        except Exception:
-            raise TypeError(
-                "p_value must be of type 'float', got {}".format(type(p_value).__name__))
+        self.evaluate_data_type({p_value: float})
 
         sign_limit = [0.0001, 0.001, 0.01, 0.05, ]
         sign_stars = ['****', '***', '**', '*', '']

@@ -3,6 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+import pandas as pd
+
 
 class AbstractGenerator:
     """
@@ -11,9 +13,25 @@ class AbstractGenerator:
     """
 
     @staticmethod
+    def evaluate_pd_dataframe(obj):
+        """
+        Method that evaluate if an object is a pandas.Dataframe, raises TypeError if not match
+
+        Parameters
+        ----------
+        obj     : object
+                  object to be evaluated
+
+        """
+        if not isinstance(obj, pd.DataFrame):
+            raise TypeError(
+                "object must be of type 'pandas.DataFrame', got {}".format(type(obj).__name__))
+
+    @staticmethod
     def evaluate_data_type(arg_dict):
         """
-        Method that evaluates the type of an object. Raises TypeError if not match.
+        Method that evaluates the type of objects in dictionary of {objects: types}. Raises
+        TypeError if not match.
 
         Parameters
         ----------
@@ -22,14 +40,11 @@ class AbstractGenerator:
 
         """
         for arg, t in arg_dict.items():
-            try:
-                if arg is not None:
-                    arg = t(arg)
-            except Exception:
+            if not isinstance(arg, t):
                 raise TypeError(
                     "Expected type '{}', got '{}' instead".format(t.__name__, type(arg).__name__))
 
-    def __init__(self, dim='col', digits=5, seed=None):
+    def __init__(self, dim='col', digits=5, seed=90210):
         """
         Constructor / Initiate the class
 
@@ -45,7 +60,7 @@ class AbstractGenerator:
 
         """
         if type(self) == AbstractGenerator:
-            raise Exception("base class cannot be instantiated")
+            raise TypeError("base class AbstractGenerator cannot be instantiated")
 
         self.evaluate_data_type({dim: str, digits: int, seed: int})
         self.dim = dim
