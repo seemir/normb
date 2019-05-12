@@ -4,14 +4,13 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.util.df_generator import DataFrameGenerator
-from normbatt.util.abstract_generator import AbstractGenerator
 import pandas as pd
 import pytest as pt
 import numpy as np
 import os
 
 
-class TestDfGenerator:
+class TestDataFrameGenerator:
 
     @pt.fixture(autouse=True)
     def setup(self):
@@ -25,29 +24,6 @@ class TestDfGenerator:
                     'normal_data_frame': self.dfg.normal_data_frame(),
                     'mixed_data_frame': self.dfg.mixed_data_frame()}
 
-    def test_instances_are_subclass_of_abstract_generator(self):
-        """
-        Test the DataFrameGenerator instances are subtypes of AbstractGenerator
-
-        """
-        assert issubclass(self.dfg.__class__, AbstractGenerator)
-
-    def test_instances_are_instance_of_dataframe_generator(self):
-        """
-        Test for correct DataFrameGenerator type
-
-        """
-        assert isinstance(self.dfg, DataFrameGenerator)
-
-    def test_instances_of_output_distribution_are_instance_of_pandas_dataframe(self):
-        """
-        Test that all df methods in DataFrameGenerator (normal, uniform, mixed) produce
-        Pandas dataframes.
-
-        """
-        for dataframe in self.dfs.values():
-            assert isinstance(dataframe, pd.DataFrame)
-
     def test_raise_typeerror_when_seed_is_not_int(self):
         """
         Test that TypeError is thrown when invalid datatype of seed is passed to
@@ -57,14 +33,6 @@ class TestDfGenerator:
         invalid_seeds = [{}, [], (), 'test', True]
         for seed in invalid_seeds:
             pt.raises(TypeError, self.dfg, seed)
-
-    def test_seed_gets_set_in_constructor(self):
-        """
-        Test that seed gets set when passed through constructor
-
-        """
-        assert self.dfg.seed == self.seed
-        assert self.dfg.seed == 123456789
 
     def test_seed_always_produces_same_df(self):
         """
@@ -85,13 +53,12 @@ class TestDfGenerator:
         methods = self.dfs.keys()
         for method in methods:
             mocker.spy(DataFrameGenerator, method)
-            dfg = DataFrameGenerator(self.seed)
-            df_method = getattr(dfg, method)()
+            df_method = getattr(self.dfg, method)()
             assert getattr(DataFrameGenerator, method).call_count == 1
 
-    def test_typeerror_raised_if_non_pd_dataframe_passed_in_to_excel(self):
+    def test_typeerror_raised_when_non_pd_dataframe_passed_in_to_excel(self):
         """
-        TypeError is thrown if non - pd.DataFrame object is passed in to_excel() method
+        TypeError is thrown when non - pd.DataFrame object is passed in to_excel() method
 
         """
         invalid_dfs = [{}, [], (), 'test', True]
@@ -155,3 +122,15 @@ class TestDfGenerator:
 
         for i, row in df.iterrows():
             assert np.mean(row.to_list()) == pt.approx(0, abs=1)
+
+    def test_to_excel_from_df_method(self):
+        """
+        Possible to save produced df to excel using excel=True argument in df methods, i.e.
+        uniform_data_frame(), normal_data_frame() and mixed_data_frame()
+
+        """
+        file_dir = 'reports/xlsx'
+        for method in self.dfs.keys():
+            input_df = getattr(self.dfg, method)(excel=True)
+            saved_df = pd.read_excel(file_dir + '/' + os.listdir(file_dir)[-1], index_col=0)
+            pd.testing.assert_frame_equal(saved_df, input_df)
