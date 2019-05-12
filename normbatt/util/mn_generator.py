@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.generators.abstract_generator import AbstractGenerator
+from normbatt.util.abstract_generator import AbstractGenerator
 from normbatt.multivariate_norm.mardia import Mardia
 from normbatt.multivariate_norm.henze_zirkler import HenzeZirkler
 from normbatt.multivariate_norm.royston import Royston

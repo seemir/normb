@@ -3,8 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.generators.df_generator import DataFrameGenerator
-from normbatt.util.generators.abstract_generator import AbstractGenerator
+from normbatt.util.df_generator import DataFrameGenerator
+from normbatt.util.abstract_generator import AbstractGenerator
 import pandas as pd
 import pytest as pt
 import numpy as np
@@ -140,8 +140,8 @@ class TestDfGenerator:
         """
         # Default case, mean = 0
         df = self.dfs['normal_data_frame']
-        for idx, column in df.iteritems():
+        for i, column in df.iteritems():
             assert np.mean(column.to_list()) == pt.approx(0, abs=1)
 
-        for idx, row in df.iterrows():
+        for i, row in df.iterrows():
             assert np.mean(row.to_list()) == pt.approx(0, abs=1)

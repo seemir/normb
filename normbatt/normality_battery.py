@@ -3,10 +3,10 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.generators.ds_generator import DescriptiveStatisticsGenerator
-from normbatt.util.generators.mn_generator import MultivariateNormalityGenerator
-from normbatt.util.generators.un_generator import UnivariateNormalityGenerator
-from normbatt.util.generators.df_generator import DataFrameGenerator
+from normbatt.util.ds_generator import DescriptiveStatisticsGenerator
+from normbatt.util.mn_generator import MultivariateNormalityGenerator
+from normbatt.util.un_generator import UnivariateNormalityGenerator
+from normbatt.util.df_generator import DataFrameGenerator
 import pandas as pd
 import datetime
 import os

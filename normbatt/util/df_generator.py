@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.generators.abstract_generator import AbstractGenerator
+from normbatt.util.abstract_generator import AbstractGenerator
 import pandas as pd
 import numpy as np
 import datetime

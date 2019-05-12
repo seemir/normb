@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.generators.df_generator import DataFrameGenerator
+from normbatt.util.df_generator import DataFrameGenerator
 from normbatt.normality_battery import NormalityBattery
 
 if __name__ == '__main__':
