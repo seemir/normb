@@ -7,7 +7,6 @@ from normbatt.util.ds_generator import DescriptiveStatisticsGenerator
 from normbatt.util.mn_generator import MultivariateNormalityGenerator
 from normbatt.util.un_generator import UnivariateNormalityGenerator
 from normbatt.util.df_generator import DataFrameGenerator
-import pandas as pd
 import datetime
 import os
 

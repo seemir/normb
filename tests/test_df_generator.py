@@ -105,10 +105,20 @@ class TestDfGenerator:
 
         """
         input_df = pd.DataFrame(np.random.rand(30, 30))
-        file_dir = 'test_reports/xlsx'
+        file_dir = 'reports/xlsx'
         self.dfg.to_excel(df=input_df, file_dir=file_dir)
         saved_df = pd.read_excel(file_dir + '/' + os.listdir(file_dir)[-1], index_col=0)
         pd.testing.assert_frame_equal(saved_df, input_df)
+
+    def test_os_error_is_thrown_when_dir_cannot_be_created(self):
+        """
+        OSError raised when invalid file_dir is passed to to_excel() method
+
+        """
+        input_df = pd.DataFrame(np.random.rand(30, 30))
+        file_dir = '._?`/1234'  # Invalid dir name
+        with pt.raises(OSError):
+            self.dfg.to_excel(df=input_df, file_dir=file_dir)
 
     def test_correct_dimensions_in_produced_df(self):
         """
