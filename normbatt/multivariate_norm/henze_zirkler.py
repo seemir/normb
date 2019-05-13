@@ -25,7 +25,8 @@ class HenzeZirkler(AbstractNormalityTest):
         """
         super().__init__(df)
 
-    def run_hz_test(self):
+    @staticmethod
+    def run_hz_test():
         """
         Runs the Henze-Zirkler test for multivariate normality by delegating the task to the
         MVN module in r

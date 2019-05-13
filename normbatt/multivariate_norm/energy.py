@@ -10,18 +10,15 @@ from rpy2.robjects import r
 class Energy(AbstractNormalityTest):
     """
     Implements the the Energy E test for multivariate normality
-
     """
 
     def __init__(self, df):
         """
         Constructor / Initiate the class
-
         Parameters
         ----------
         df      : pandas.DataFrame
                   df to be analysed
-
         """
         super().__init__(df)
 
@@ -30,19 +27,16 @@ class Energy(AbstractNormalityTest):
         """
         Runs the Energy E test for multivariate normality by delegating the task to the
         MVN module in r
-
         """
         r('res <- mvn(df, mvnTest = "energy")')
 
     def print_results(self):
         """
         Gets the dh test statistic and p-value
-
         Returns
         -------
         Out     : tuple
                   (e test statistic, p-value)
-
         """
 
         self.run_e_test()

@@ -10,39 +10,34 @@ from rpy2.robjects import r
 class Mardia(AbstractNormalityTest):
     """
     Implements the Mardia test for multivariate normality
-
     """
 
     def __init__(self, df):
         """
         Constructor / Initiate the class
-
         Parameters
         ----------
         df      : pandas.DataFrame
                   df to be analysed
-
         """
         super().__init__(df)
 
-    def run_mardia_test(self):
+    @staticmethod
+    def run_mardia_test():
         """
         Runs the Mardia test for multivariate normality by delegating the task to the
         MVN module in r
-
         """
         r('res <- mvn(df, mvnTest = "mardia")')
 
     def print_results(self):
         """
         Gets the mardia test statistics and p-values
-
         Returns
         -------
         Out     : tuple
                   (mardia_skew test statistic, p-value,
                    mardia_kurt test statistic, p-value)
-
         """
         self.run_mardia_test()
         m_skew = r('as.numeric(as.vector(res$multivariateNormality[1, "Statistic"]))')

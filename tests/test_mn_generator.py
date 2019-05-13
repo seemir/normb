@@ -19,9 +19,9 @@ class TestMultivariateNormalityGenerator:
         """
         self.seed = 90210
         self.dfg = DataFrameGenerator(self.seed)
-        self.dfs = {'uniform_data_frame': self.dfg.uniform_data_frame(),
-                    'normal_data_frame': self.dfg.normal_data_frame(),
-                    'mixed_data_frame': self.dfg.mixed_data_frame()}
+        self.dfs = {'uniform_data_frame': self.dfg.uniform_data_frame(sample=(5, 5)),
+                    'normal_data_frame': self.dfg.normal_data_frame(sample=(5, 5)),
+                    'mixed_data_frame': self.dfg.mixed_data_frame(sample=(5, 5))}
         self.mng = {}
         for name, df in self.dfs.items():
             self.mng.update({name: MultivariateNormalityGenerator(df, digits=5)})
