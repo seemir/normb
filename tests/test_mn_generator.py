@@ -68,3 +68,5 @@ class TestMultivariateNormalityGenerator:
                     pd.testing.assert_frame_equal(df, mng.df)
                     assert mng.dim == 'col'
                     assert mng.digits == 5
+
+

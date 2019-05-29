@@ -3,10 +3,10 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from normbatt.util.df_generator import DataFrameGenerator
 from rpy2.robjects.numpy2ri import numpy2ri
 from rpy2.robjects import r
 import numpy as np
-import pandas as pd
 
 
 class AbstractNormalityTest:
@@ -28,14 +28,7 @@ class AbstractNormalityTest:
         if type(self) == AbstractNormalityTest:
             raise Exception("base class cannot be instantiated")
 
-        try:
-            df = pd.DataFrame(df)
-        except Exception:
-            raise TypeError(
-                "df must be of type 'pandas.DataFrame', got {}".format(type(df).__name__))
-
-        self.df = numpy2ri(np.array(df, dtype=float))
+        DataFrameGenerator.evaluate_pd_dataframe(df)
         r('if (!is.element("MVN", installed.packages()[,1])){ '
           'install.packages("MVN", dep = TRUE)}')
-        r('require("MVN", character.only = TRUE)')
-        r.assign("df", self.df)
+        self.df = numpy2ri(np.array(df, dtype=float))

@@ -25,13 +25,14 @@ class DoornikHansen(AbstractNormalityTest):
         """
         super().__init__(df)
 
-    @staticmethod
-    def run_dh_test():
+    def run_dh_test(self):
         """
         Runs the Doornik-Hansen test for multivariate normality by delegating the task to the
         MVN module in r
 
         """
+        r('require("MVN", character.only = TRUE)')
+        r.assign("df", self.df)
         r('res <- mvn(df, mvnTest = "dh")')
 
     def print_results(self):

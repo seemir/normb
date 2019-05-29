@@ -18,7 +18,7 @@ class MultivariateNormalityGenerator(AbstractGenerator):
 
     """
 
-    def __init__(self, df, digits):
+    def __init__(self, df, digits=5):
         """
         Constructor / Initiate the class
 
@@ -58,11 +58,12 @@ class MultivariateNormalityGenerator(AbstractGenerator):
 
         # Add Mardia results
         mardia = Mardia(self.df)
+        mardia_results = mardia.print_results()
         multi_norm_mardia_row = ['mardia',
-                                 rnd(mardia.print_results()[0], d),
-                                 rnd(mardia.print_results()[1], d),
-                                 rnd(mardia.print_results()[2], d),
-                                 rnd(mardia.print_results()[3], d),
+                                 rnd(mardia_results[0], d),
+                                 rnd(mardia_results[1], d),
+                                 rnd(mardia_results[2], d),
+                                 rnd(mardia_results[3], d),
                                  ]
         multi_norm_table.add_row(multi_norm_mardia_row)
 
@@ -73,9 +74,10 @@ class MultivariateNormalityGenerator(AbstractGenerator):
                    'energy': Energy(self.df)}
 
         for name, method in methods.items():
+            method_results = method.print_results()
             multi_norm_row = [name,
-                              rnd(method.print_results()[0], d),
-                              rnd(method.print_results()[1], d),
+                              rnd(method_results[0], d),
+                              rnd(method_results[1], d),
                               '', ''
                               ]
             multi_norm_table.add_row(multi_norm_row)
@@ -84,3 +86,11 @@ class MultivariateNormalityGenerator(AbstractGenerator):
         multi_norm_table.title = 'Multivariate Normality test ' + self.get_dimensions() + \
                                  ' DataFrame(df)'
         return str(multi_norm_table)
+
+
+if __name__ == '__main__':
+    from normbatt.util.df_generator import DataFrameGenerator
+
+    df = DataFrameGenerator(seed=90210)
+    mn = MultivariateNormalityGenerator(df=df.normal_data_frame())
+    print(mn.generate_multivariate_normality_results())

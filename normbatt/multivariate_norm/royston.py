@@ -25,13 +25,14 @@ class Royston(AbstractNormalityTest):
         """
         super().__init__(df)
 
-    @staticmethod
-    def run_royston_test():
+    def run_royston_test(self):
         """
         Runs the Royston test for multivariate normality by delegating the task to the
         MVN module in r
 
         """
+        r('require("MVN", character.only = TRUE)')
+        r.assign("df", self.df)
         r('res <- mvn(df, mvnTest = "royston")')
 
     def print_results(self):

@@ -19,20 +19,24 @@ class Mardia(AbstractNormalityTest):
         ----------
         df      : pandas.DataFrame
                   df to be analysed
+
         """
         super().__init__(df)
 
-    @staticmethod
-    def run_mardia_test():
+    def run_mardia_test(self):
         """
         Runs the Mardia test for multivariate normality by delegating the task to the
         MVN module in r
+
         """
+        r('require("MVN", character.only = TRUE)')
+        r.assign("df", self.df)
         r('res <- mvn(df, mvnTest = "mardia")')
 
     def print_results(self):
         """
         Gets the mardia test statistics and p-values
+
         Returns
         -------
         Out     : tuple
