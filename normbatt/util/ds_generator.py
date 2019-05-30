@@ -59,6 +59,7 @@ class DescriptiveStatisticsGenerator(AbstractGenerator):
                              'kurtosis', 'skewness',
                              'min', 'max',
                              'quant (95%)']
+
         desc_table.field_names = decs_header_names
 
         vectors = self.df.iteritems() if self.dim == "col" else self.df.iterrows()
@@ -73,5 +74,4 @@ class DescriptiveStatisticsGenerator(AbstractGenerator):
             desc_table.add_row(desc_row)
             desc_table.align = "r"
 
-        desc_table.title = 'Descriptive statistics ' + self.get_dimensions() + ' DataFrame(df)'
         return str(desc_table)

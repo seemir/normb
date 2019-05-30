@@ -50,7 +50,7 @@ class MultivariateNormalityGenerator(AbstractGenerator):
         """
         self.evaluate_data_type({self.digits: int})
 
-        multi_norm_table = PrettyTable(vrules=2)
+        multi_norm_table = PrettyTable(hrules=3, vrules=2)
         rnd, d = round, self.digits
 
         multi_norm_header_name = ['', 't1', 'p-value (t1)', 't2', 'p-value (t2)']
@@ -83,14 +83,5 @@ class MultivariateNormalityGenerator(AbstractGenerator):
             multi_norm_table.add_row(multi_norm_row)
 
         multi_norm_table.align = "r"
-        multi_norm_table.title = 'Multivariate Normality test ' + self.get_dimensions() + \
-                                 ' DataFrame(df)'
+
         return str(multi_norm_table)
-
-
-if __name__ == '__main__':
-    from normbatt.util.df_generator import DataFrameGenerator
-
-    df = DataFrameGenerator(seed=90210)
-    mn = MultivariateNormalityGenerator(df=df.normal_data_frame())
-    print(mn.generate_multivariate_normality_results())

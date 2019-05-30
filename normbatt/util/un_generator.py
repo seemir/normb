@@ -7,7 +7,6 @@ from normbatt.util.abstract_generator import AbstractGenerator
 from prettytable import PrettyTable
 from bisect import bisect_left
 import scipy.stats as stats
-import pandas as pd
 
 
 class UnivariateNormalityGenerator(AbstractGenerator):
@@ -96,5 +95,4 @@ class UnivariateNormalityGenerator(AbstractGenerator):
             unorm_table.add_row(norm_row)
             unorm_table.align = "r"
 
-        unorm_table.title = 'Univariate Normality test ' + self.get_dimensions() + ' DataFrame(df)'
         return str(unorm_table)
