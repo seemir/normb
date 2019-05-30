@@ -66,15 +66,3 @@ class AbstractGenerator:
         self.dim = dim
         self.digits = digits
         self.seed = seed
-
-    def get_dimensions(self):
-        """
-        Gets the dimensions of the Dataframe initiated
-
-        Returns
-        -------
-        Out     : string
-                  dimensions of df
-
-        """
-        return "x".join(str(dim) for dim in self.df.shape)

@@ -5,10 +5,11 @@ __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.normality_battery import NormalityBattery
 from normbatt.util.df_generator import DataFrameGenerator
+from tests.test_setup import TestSetup
 import pytest as pt
 
 
-class TestNormalityBattery:
+class TestNormalityBattery(TestSetup):
 
     @pt.fixture(autouse=True)
     def setup(self):
@@ -16,8 +17,7 @@ class TestNormalityBattery:
         Executed before every test
 
         """
-        self.seed = 90210
-        self.dfg = DataFrameGenerator(seed=self.seed)
+        super(TestNormalityBattery, self).setup()
         self.nb_uniform = NormalityBattery(self.dfg.uniform_data_frame())
         self.nb_normal = NormalityBattery(self.dfg.normal_data_frame())
         self.nb_mixed = NormalityBattery(self.dfg.mixed_data_frame())

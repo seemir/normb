@@ -4,12 +4,12 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.util.mn_generator import MultivariateNormalityGenerator
-from normbatt.util.df_generator import DataFrameGenerator
+from tests.test_setup import TestSetup
 import pandas as pd
 import pytest as pt
 
 
-class TestMultivariateNormalityGenerator:
+class TestMultivariateNormalityGenerator(TestSetup):
 
     @pt.fixture(autouse=True)
     def setup(self):
@@ -17,22 +17,22 @@ class TestMultivariateNormalityGenerator:
         Executed before all tests
 
         """
-        self.seed = 90210
-        self.dfg = DataFrameGenerator(self.seed)
-        self.dfs = {'uniform_data_frame': self.dfg.uniform_data_frame(sample=(5, 5)),
-                    'normal_data_frame': self.dfg.normal_data_frame(sample=(5, 5)),
-                    'mixed_data_frame': self.dfg.mixed_data_frame(sample=(5, 5))}
+        super(TestMultivariateNormalityGenerator, self).setup()
         self.mng = {}
         for name, df in self.dfs.items():
             self.mng.update({name: MultivariateNormalityGenerator(df, digits=5)})
 
-    def test_instances_of_output_is_str(self):
+    def test_instances_of_output_is_str_containing_results(self):
         """
-        Test that the generate_descriptive_statistics() method produces str objects
+        Test that the generate_descriptive_statistics() method produces str objects containing results of all
+        normality tests
 
         """
+        normality_tests = ['mardia', 'royston', 'henze-zirkler', 'doornik-hansen', 'energy']
         for mng in self.mng.values():
-            assert isinstance(getattr(mng, 'generate_multivariate_normality_results')(), str)
+            results = getattr(mng, 'generate_multivariate_normality_results')()
+            assert isinstance(results, str)
+            assert all(normality_test in results for normality_test in normality_tests)
 
     def test_typeerror_raised_when_non_pd_dataframe_passed_into_constructor(self):
         """
@@ -68,5 +68,3 @@ class TestMultivariateNormalityGenerator:
                     pd.testing.assert_frame_equal(df, mng.df)
                     assert mng.dim == 'col'
                     assert mng.digits == 5
-
-

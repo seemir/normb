@@ -147,8 +147,7 @@ class DataFrameGenerator(AbstractGenerator):
         original_df = self.uniform_data_frame(limits, sample)
         mixed_df = original_df.append(self.normal_data_frame(mu, sigma, sample),
                                       ignore_index=True)
-        # df = mixed_df.apply(np.random.permutation).head(sample[0])
-        df = mixed_df
+        df = mixed_df.apply(np.random.permutation).head(sample[0])
         if excel:
             self.to_excel(df)
         return df

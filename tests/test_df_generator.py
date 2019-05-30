@@ -4,25 +4,14 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.util.df_generator import DataFrameGenerator
+from tests.test_setup import TestSetup
 import pandas as pd
 import pytest as pt
 import numpy as np
 import os
 
 
-class TestDataFrameGenerator:
-
-    @pt.fixture(autouse=True)
-    def setup(self):
-        """
-        Executed before all tests
-
-        """
-        self.seed = 123456789
-        self.dfg = DataFrameGenerator(seed=self.seed)
-        self.dfs = {'uniform_data_frame': self.dfg.uniform_data_frame(),
-                    'normal_data_frame': self.dfg.normal_data_frame(),
-                    'mixed_data_frame': self.dfg.mixed_data_frame()}
+class TestDataFrameGenerator(TestSetup):
 
     def test_raise_typeerror_when_seed_is_not_int(self):
         """
