@@ -16,7 +16,7 @@ time_print("running", "check_normb", now)
 
 for method in methods:
     print("starting method: " + method + "()")
-    nb = NormalityBattery(getattr(df, method)(sample=(50, 50)))
+    nb = NormalityBattery(getattr(df, method)(sample=(1000, 100)))
     nb.print_report()
     time_progress_print("finished", method, now)
 

@@ -7,6 +7,7 @@ from normbatt.util.abstract_generator import AbstractGenerator
 import pandas as pd
 import numpy as np
 import datetime
+import inspect
 import os
 
 
@@ -151,3 +152,16 @@ class DataFrameGenerator(AbstractGenerator):
         if excel:
             self.to_excel(df)
         return df
+
+    def __getmethods__(self):
+        """
+        List all df methods in class as str
+
+        Returns
+        -------
+        Out     : list of str
+                  names of all methods in class
+
+        """
+        return [method[0] for method in inspect.getmembers(self, predicate=inspect.ismethod) if
+                method[0] not in ['__init__', '__getmethods__', 'to_excel']]

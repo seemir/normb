@@ -19,17 +19,19 @@ class Energy(AbstractNormalityTest):
         ----------
         df      : pandas.DataFrame
                   df to be analysed
+
         """
         super().__init__(df)
 
-    def run_e_test(self):
+    def run_e_test(self, boot=100):
         """
         Runs the Energy E test for multivariate normality by delegating the task to the
         MVN module in r
+
         """
         r('require("MVN", character.only = TRUE)')
         r.assign("df", self.df)
-        r('res <- mvn(df, mvnTest = "energy")')
+        r('res <- mvn(df, mvnTest = "energy", R = {})'.format(boot))
 
     def print_results(self):
         """
@@ -38,8 +40,8 @@ class Energy(AbstractNormalityTest):
         -------
         Out     : tuple
                   (e test statistic, p-value)
-        """
 
+        """
         self.run_e_test()
         dh = r('as.numeric(res$multivariateNormality[2])')
         p_dh = r('as.numeric(res$multivariateNormality["p value"])')

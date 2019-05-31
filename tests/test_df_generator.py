@@ -28,19 +28,22 @@ class TestDataFrameGenerator(TestSetup):
         Test that the seed configured produces the same df
 
         """
-        test_seed = 90210
-        test_df = DataFrameGenerator(test_seed).uniform_data_frame(sample=(2, 2), limits=(0, 100))
-        correct_df = pd.DataFrame(
-            np.array([[19.23366508, 92.51010224], [39.57834764, 78.56387572]]))
-        pd.testing.assert_frame_equal(test_df, correct_df)
+        arrays = [[[-0.6153267, 0.57127751], [-0.36840213, -0.48346131]],
+                  [[1.32508055, -0.48346131], [-0.36840213, 0.11317361]],
+                  [[-0.6153267, 0.85020204], [-0.20843305, 0.57127751]]
+                  ]
+        correct_dfs = [pd.DataFrame(np.array(arr)) for arr in arrays]
+
+        for i, method in enumerate(self.dfg.__getmethods__()):
+            test_df = getattr(self.dfg, method)(sample=(2, 2))
+            pd.testing.assert_frame_equal(test_df, correct_dfs[i])
 
     def test_correct_number_of_calls_made_to_method(self, mocker):
         """
         Mocker of calls to methods in DataFrameGenerator
 
         """
-        methods = self.dfs.keys()
-        for method in methods:
+        for method in self.dfs.keys():
             mocker.spy(DataFrameGenerator, method)
             df_method = getattr(self.dfg, method)()
             assert getattr(DataFrameGenerator, method).call_count == 1
@@ -81,15 +84,12 @@ class TestDataFrameGenerator(TestSetup):
         Shape of df produced are same as configured
 
         """
-        # Default case, 30 x 30
-        for df in self.dfs.values():
-            assert df.shape == (30, 30)
-            assert np.prod(df.shape) == 900
-
-        # Customized case 100 x 100
-        df = self.dfg.normal_data_frame(sample=(100, 100))
-        assert df.shape == (100, 100)
-        assert np.prod(df.shape) == 10000
+        dims = [(30, 30), (30, 50), (50, 30)]
+        for dim in dims:
+            for method in self.dfg.__getmethods__():
+                df = getattr(self.dfg, method)(sample=dim)
+                assert df.shape == dim
+                assert np.prod(df.shape) == np.prod(dim)
 
     def test_not_possible_to_configure_negative_dimensions(self):
         """

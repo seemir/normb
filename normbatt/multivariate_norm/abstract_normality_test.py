@@ -4,8 +4,7 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.util.df_generator import DataFrameGenerator
-from rpy2.robjects.numpy2ri import numpy2ri
-from rpy2.robjects import r
+from rpy2.robjects import r, numpy2ri
 import numpy as np
 
 
@@ -31,4 +30,4 @@ class AbstractNormalityTest:
         DataFrameGenerator.evaluate_pd_dataframe(df)
         r('if (!is.element("MVN", installed.packages()[,1])){ '
           'install.packages("MVN", dep = TRUE)}')
-        self.df = numpy2ri(np.array(df, dtype=float))
+        self.df = numpy2ri.numpy2ri(np.array(df))
