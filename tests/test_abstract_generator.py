@@ -15,7 +15,8 @@ class TestAbstractGenerator:
         TypeError is thrown
 
         """
-        pt.raises(TypeError, AbstractGenerator)
+        with pt.raises(TypeError):
+            ag = AbstractGenerator()
 
     def test_access_static_evaluate_pd_dataframe_method(self):
         """

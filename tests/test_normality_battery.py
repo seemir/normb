@@ -7,20 +7,10 @@ from normbatt.normality_battery import NormalityBattery
 from normbatt.util.df_generator import DataFrameGenerator
 from tests.test_setup import TestSetup
 import pytest as pt
+import pandas as pd
 
 
 class TestNormalityBattery(TestSetup):
-
-    @pt.fixture(autouse=True)
-    def setup(self):
-        """
-        Executed before every test
-
-        """
-        super(TestNormalityBattery, self).setup()
-        self.nb_uniform = NormalityBattery(self.dfg.uniform_data_frame())
-        self.nb_normal = NormalityBattery(self.dfg.normal_data_frame())
-        self.nb_mixed = NormalityBattery(self.dfg.mixed_data_frame())
 
     def test_all_dfg_are_of_instance_dataframegenerator(self):
         """
@@ -34,8 +24,7 @@ class TestNormalityBattery(TestSetup):
         Test that all the normality battery instances are of type NormalityBattery()
 
         """
-        nbs = [self.nb_uniform, self.nb_normal, self.nb_mixed]
-        for nb in nbs:
+        for nb in self.nbs.values():
             assert isinstance(nb, NormalityBattery)
 
     def test_typeerror_raised_when_invalid_data_type_is_instantiated(self):
@@ -46,3 +35,25 @@ class TestNormalityBattery(TestSetup):
         dfs = [90210, 'test', True]
         for df in dfs:
             pt.raises(TypeError, NormalityBattery, df)
+
+    def test_df_gets_instantiated_when_passed_through_nb_constructor(self):
+        """
+        Test that df gets set when passed through the constructor
+
+        """
+        for i, df in enumerate(self.dfs.values()):
+            for j, nb in enumerate(self.nbs.values()):
+                if i == j:
+                    pd.testing.assert_frame_equal(df, nb.df)
+
+    def test_printing_methods(self):
+        """
+        Test that all the printing methods (print_descriptive_statistics,
+        print_univariate_normality etc.) produces str object
+
+        """
+
+        for nb in self.nbs.values():
+            for method in nb.__getmethods__():
+                nb_results = getattr(nb, method)()
+                isinstance(nb_results, str)

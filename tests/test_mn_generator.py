@@ -22,18 +22,6 @@ class TestMultivariateNormalityGenerator(TestSetup):
         for name, df in self.dfs.items():
             self.mng.update({name: MultivariateNormalityGenerator(df, digits=5)})
 
-    def test_instances_of_output_is_str_containing_results(self):
-        """
-        Test that the generate_descriptive_statistics() method produces str objects containing results of all
-        normality tests
-
-        """
-        normality_tests = ['mardia', 'royston', 'henze-zirkler', 'doornik-hansen', 'energy']
-        for mng in self.mng.values():
-            results = getattr(mng, 'generate_multivariate_normality_results')()
-            assert isinstance(results, str)
-            assert all(normality_test in results for normality_test in normality_tests)
-
     def test_typeerror_raised_when_non_pd_dataframe_passed_into_constructor(self):
         """
         TypeError raised when non - pd.DataFrame passed into constructor

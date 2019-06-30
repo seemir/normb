@@ -5,7 +5,6 @@ __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.util.abstract_generator import AbstractGenerator
 from prettytable import PrettyTable
-from bisect import bisect_left
 import scipy.stats as stats
 
 
@@ -38,26 +37,6 @@ class UnivariateNormalityGenerator(AbstractGenerator):
         self.dim = dim
         self.digits = digits
 
-    def astrix(self, p_value):
-        """
-        Method for producing correct astrix notation given a p-value
-
-        Parameters
-        ----------
-        p_value   : float
-                    p-value to be looked-up
-        Returns
-        -------
-        Out     : string
-                  correct astrix notation
-
-        """
-        self.evaluate_data_type({p_value: float})
-
-        sign_limit = [0.0001, 0.001, 0.01, 0.05, ]
-        sign_stars = ['****', '***', '**', '*', '']
-        return sign_stars[bisect_left(sign_limit, p_value)]
-
     def generate_univariate_normality_results(self):
         """
         Method that generates univariate normality results from a pandas.DataFrame's column or row
@@ -87,10 +66,10 @@ class UnivariateNormalityGenerator(AbstractGenerator):
             ks, p_ks = stats.kstest(vector, cdf='norm')
             sw, p_sw = stats.shapiro(vector)
             norm_row = [rnd(i + 1, d),
-                        rnd(jb, d), "{}{}".format(rnd(p_jb, d), self.astrix(rnd(p_jb, d))),
-                        rnd(k2, d), "{}{}".format(rnd(p_pr, d), self.astrix(rnd(p_pr, d))),
-                        rnd(ks, d), "{}{}".format(rnd(p_ks, d), self.astrix(rnd(p_ks, d))),
-                        rnd(sw, d), "{}{}".format(rnd(p_sw, d), self.astrix(rnd(p_sw, d)))]
+                        rnd(jb, d), self.astrix(rnd(p_jb, d)),
+                        rnd(k2, d), self.astrix(rnd(p_pr, d)),
+                        rnd(ks, d), self.astrix(rnd(p_ks, d)),
+                        rnd(sw, d), self.astrix(rnd(p_sw, d))]
 
             unorm_table.add_row(norm_row)
             unorm_table.align = "r"

@@ -3,7 +3,9 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from bisect import bisect_left
 import pandas as pd
+import inspect
 
 
 class AbstractGenerator:
@@ -66,3 +68,36 @@ class AbstractGenerator:
         self.dim = dim
         self.digits = digits
         self.seed = seed
+
+    def astrix(self, p_value):
+        """
+        Method for producing correct astrix notation given a p-value
+
+        Parameters
+        ----------
+        p_value   : float
+                    p-value to be looked-up
+        Returns
+        -------
+        Out     : string
+                  correct astrix notation
+
+        """
+        self.evaluate_data_type({p_value: float})
+
+        sign_limit = [0.0001, 0.001, 0.01, 0.05, ]
+        sign_stars = ['****', '***', '**', '*', '']
+        return "{}{}".format(p_value, sign_stars[bisect_left(sign_limit, p_value)])
+
+    def __getmethods__(self):
+        """
+        List all df methods in class as str
+
+        Returns
+        -------
+        Out     : list of str
+                  names of all methods in class
+
+        """
+        return [method[0] for method in inspect.getmembers(self, predicate=inspect.ismethod) if
+                method[0] not in ['__init__', '__getmethods__', 'to_excel', 'astrix']]

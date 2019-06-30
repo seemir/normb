@@ -22,14 +22,6 @@ class TestDescriptiveStatisticsGenerator(TestSetup):
         for name, df in self.dfs.items():
             self.dss.update({name: DescriptiveStatisticsGenerator(df, dim='col', digits=5)})
 
-    def test_instances_of_output_is_str(self):
-        """
-        Test that the generate_descriptive_statistics() method produces str objects
-
-        """
-        for dss in self.dss.values():
-            assert isinstance(getattr(dss, 'generate_descriptive_statistics')(), str)
-
     def test_typeerror_raised_when_non_pd_dataframe_passed_into_constructor(self):
         """
         TypeError raised when non - pd.DataFrame passed into constructor

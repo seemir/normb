@@ -7,7 +7,6 @@ from normbatt.util.abstract_generator import AbstractGenerator
 import pandas as pd
 import numpy as np
 import datetime
-import inspect
 import os
 
 
@@ -31,7 +30,7 @@ class DataFrameGenerator(AbstractGenerator):
         self.evaluate_data_type({seed: int})
         super().__init__(seed=seed)
 
-    def to_excel(self, df, file_dir="reports/xlsx"):
+    def to_excel(self, df, file_dir="reports/xlsx", header=True, index=True):
         """
         Method that converts dataframe (df) to Excel
 
@@ -41,6 +40,10 @@ class DataFrameGenerator(AbstractGenerator):
                   dataframe to be converted into excel
         file_dir: str
                   directory to save the file
+        header  : bool
+                  Write out the column names
+        index   : bool
+                  Write row names
 
         """
         self.evaluate_pd_dataframe(df)
@@ -48,7 +51,6 @@ class DataFrameGenerator(AbstractGenerator):
 
         local_time = datetime.datetime.now().isoformat().replace(":", "-").replace(".", "-")
         filepath = os.path.join(file_dir, "ExcelDataFrame_" + local_time + ".xlsx")
-        engine = 'xlsxwriter'
 
         try:
             if not os.path.exists(file_dir):
@@ -56,8 +58,7 @@ class DataFrameGenerator(AbstractGenerator):
         except Exception as e:
             raise OSError("creation of dir " + file_dir + " failed with: " + str(e))
 
-        with pd.ExcelWriter("{}".format(filepath), engine=engine) as writer:
-            df.to_excel(writer)
+        df.to_excel(filepath, header=header, index=index)
 
     def uniform_data_frame(self, limits=(-1, 1), sample=(30, 30), excel=None):
         """
@@ -152,16 +153,3 @@ class DataFrameGenerator(AbstractGenerator):
         if excel:
             self.to_excel(df)
         return df
-
-    def __getmethods__(self):
-        """
-        List all df methods in class as str
-
-        Returns
-        -------
-        Out     : list of str
-                  names of all methods in class
-
-        """
-        return [method[0] for method in inspect.getmembers(self, predicate=inspect.ismethod) if
-                method[0] not in ['__init__', '__getmethods__', 'to_excel']]

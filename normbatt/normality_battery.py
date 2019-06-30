@@ -7,6 +7,7 @@ from normbatt.util.ds_generator import DescriptiveStatisticsGenerator
 from normbatt.util.mn_generator import MultivariateNormalityGenerator
 from normbatt.util.un_generator import UnivariateNormalityGenerator
 from normbatt.util.df_generator import DataFrameGenerator
+import inspect
 import datetime
 import os
 
@@ -127,3 +128,17 @@ class NormalityBattery:
             file.write(self.print_multivariate_normality(digits) + '\n')
             file.write(self.print_univariate_normality(dim, digits))
         file.close()
+
+    def __getmethods__(self):
+        """
+        List all methods in class as str
+
+
+        Returns
+        -------
+        Out     : list of str
+                  names of all methods in class
+
+        """
+        return [method[0] for method in inspect.getmembers(self, predicate=inspect.ismethod) if
+                method[0] not in ['__init__', 'print_report']]

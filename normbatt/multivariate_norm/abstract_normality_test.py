@@ -25,7 +25,7 @@ class AbstractNormalityTest:
 
         """
         if type(self) == AbstractNormalityTest:
-            raise Exception("base class cannot be instantiated")
+            raise TypeError("base class cannot be instantiated")
 
         DataFrameGenerator.evaluate_pd_dataframe(df)
         r('if (!is.element("MVN", installed.packages()[,1])){ '

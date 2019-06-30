@@ -61,9 +61,9 @@ class MultivariateNormalityGenerator(AbstractGenerator):
         mardia_results = mardia.print_results()
         multi_norm_mardia_row = ['mardia',
                                  rnd(mardia_results[0], d),
-                                 rnd(mardia_results[1], d),
+                                 self.astrix(rnd(mardia_results[1], d)),
                                  rnd(mardia_results[2], d),
-                                 rnd(mardia_results[3], d),
+                                 self.astrix(rnd(mardia_results[3], d)),
                                  ]
         multi_norm_table.add_row(multi_norm_mardia_row)
 
@@ -77,7 +77,7 @@ class MultivariateNormalityGenerator(AbstractGenerator):
             method_results = method.print_results()
             multi_norm_row = [name,
                               rnd(method_results[0], d),
-                              rnd(method_results[1], d),
+                              self.astrix(rnd(method_results[1], d)),
                               '', ''
                               ]
             multi_norm_table.add_row(multi_norm_row)
