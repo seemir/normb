@@ -5,6 +5,7 @@ __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.multivariate_norm.abstract_normality_test import AbstractNormalityTest
 from rpy2.robjects import r
+import gc
 
 
 class HenzeZirkler(AbstractNormalityTest):
@@ -34,6 +35,7 @@ class HenzeZirkler(AbstractNormalityTest):
         r('require("MVN", character.only = TRUE)')
         r.assign("df", self.df)
         r('res <- mvn(df, mvnTest = "hz")')
+        gc.collect()
 
     def print_results(self):
         """

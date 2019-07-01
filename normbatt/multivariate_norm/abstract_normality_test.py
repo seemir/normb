@@ -6,6 +6,7 @@ __email__ = 'samir.adrik@gmail.com'
 from normbatt.util.df_generator import DataFrameGenerator
 from rpy2.robjects import r, numpy2ri
 import numpy as np
+import gc
 
 
 class AbstractNormalityTest:
@@ -31,3 +32,4 @@ class AbstractNormalityTest:
         r('if (!is.element("MVN", installed.packages()[,1])){ '
           'install.packages("MVN", dep = TRUE)}')
         self.df = numpy2ri.numpy2ri(np.array(df))
+        gc.collect()

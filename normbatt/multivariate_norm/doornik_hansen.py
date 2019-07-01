@@ -5,7 +5,7 @@ __email__ = 'samir.adrik@gmail.com'
 
 from normbatt.multivariate_norm.abstract_normality_test import AbstractNormalityTest
 from rpy2.robjects import r
-
+import gc
 
 class DoornikHansen(AbstractNormalityTest):
     """
@@ -34,6 +34,7 @@ class DoornikHansen(AbstractNormalityTest):
         r('require("MVN", character.only = TRUE)')
         r.assign("df", self.df)
         r('res <- mvn(df, mvnTest = "dh")')
+        gc.collect()
 
     def print_results(self):
         """
@@ -45,7 +46,6 @@ class DoornikHansen(AbstractNormalityTest):
                   (dh test statistic, p-value)
 
         """
-
         self.run_dh_test()
         dh = r('as.numeric(res$multivariateNormality["E"])')
         p_dh = r('as.numeric(res$multivariateNormality["p value"])')
