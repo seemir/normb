@@ -7,6 +7,7 @@ from normbatt.util.ds_generator import DescriptiveStatisticsGenerator
 from normbatt.util.mn_generator import MultivariateNormalityGenerator
 from normbatt.util.un_generator import UnivariateNormalityGenerator
 from normbatt.util.df_generator import DataFrameGenerator
+import numpy as np
 import inspect
 import datetime
 import os
@@ -29,6 +30,10 @@ class NormalityBattery:
 
         """
         DataFrameGenerator.evaluate_pd_dataframe(df)
+        if np.prod(df.shape) < 8:
+            raise ValueError(
+                "pd.DataFrame must have more that 8 observations inorder to conduct any "
+                "normality test, got {}".format(df.count()))
         self.df = df
 
     def print_descriptive_statistics(self, dim='col', digits=5):
@@ -38,8 +43,8 @@ class NormalityBattery:
         Parameters
         ----------
         dim     : string
-                  indicate whether one wants to test for normality along the columns 'col' or rows
-                  'row', default is 'col'
+                  indicate whether one wants to show descriptive statistics along the columns 'col'
+                  or rows 'row', default is 'col'
         digits  : integer
                   number of decimal places to round down
 
@@ -141,4 +146,4 @@ class NormalityBattery:
 
         """
         return [method[0] for method in inspect.getmembers(self, predicate=inspect.ismethod) if
-                method[0] not in ['__init__', 'print_report']]
+                method[0] not in ['__init__', 'print_report', '__getmethods__']]

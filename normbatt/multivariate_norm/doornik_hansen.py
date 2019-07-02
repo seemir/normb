@@ -7,6 +7,7 @@ from normbatt.multivariate_norm.abstract_normality_test import AbstractNormality
 from rpy2.robjects import r
 import gc
 
+
 class DoornikHansen(AbstractNormalityTest):
     """
     Implementation of the Doornik-Hansen test for multivariate normality

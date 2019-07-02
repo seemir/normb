@@ -17,6 +17,16 @@ class TestSetup:
         """
 
         cls.seed = 90210
-        cls.dfg = DataFrameGenerator(seed=cls.seed)
+        cls.file_dir = 'reports/txt'
+        cls.dfg = DataFrameGenerator(seed=cls.seed, sample=(8, 8))
         cls.dfs = {method: getattr(cls.dfg, method)() for method in cls.dfg.__getmethods__()}
         cls.nbs = {method: NormalityBattery(df) for method, df in cls.dfs.items()}
+        cls.params = dict(zip(list(cls.nbs.values())[0].__getmethods__(),
+                              [['mean', 'median', 'variance', 'stdev', 'kurtosis', 'skewness',
+                                'min', 'max', 'quant (95%)'],
+                               ['t1', 'p-value (t1)', 't2', 'p-value (t2)', 'mardia', 'royston',
+                                'henze-zirkler', 'doornik-hansen', 'energy'],
+                               ['jb', 'p-value (jb)', 'k2', 'p-value (k2)', 'ks', 'p-value (ks)',
+                                'sw', 'p-value (sw)']
+                               ]))
+

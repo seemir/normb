@@ -23,6 +23,13 @@ class TestDataFrameGenerator(TestSetup):
         for seed in invalid_seeds:
             pt.raises(TypeError, self.dfg, seed)
 
+    def seed_get_configured(self):
+        """
+        Test that seed gets configured when passed through constructor
+
+        """
+        assert self.dfg.seed == self.seed
+
     def test_seed_always_produces_same_df(self):
         """
         Test that the seed configured produces the same df
@@ -35,7 +42,7 @@ class TestDataFrameGenerator(TestSetup):
         correct_dfs = [pd.DataFrame(np.array(arr)) for arr in arrays]
 
         for i, method in enumerate(self.dfg.__getmethods__()):
-            test_df = getattr(self.dfg, method)(sample=(2, 2))
+            test_df = getattr(DataFrameGenerator(seed=90210, sample=(2, 2)), method)()
             pd.testing.assert_frame_equal(test_df, correct_dfs[i])
 
     def test_correct_number_of_calls_made_to_method(self, mocker):
@@ -75,9 +82,9 @@ class TestDataFrameGenerator(TestSetup):
 
         """
         input_df = pd.DataFrame(np.random.rand(30, 30))
-        file_dir = '._?`/1234'  # Invalid dir name
+        invalid_file_dir = '._?`/1234'  # Invalid dir name
         with pt.raises(OSError):
-            self.dfg.to_excel(df=input_df, file_dir=file_dir)
+            self.dfg.to_excel(df=input_df, file_dir=invalid_file_dir)
 
     def test_correct_dimensions_in_produced_df(self):
         """
@@ -87,7 +94,8 @@ class TestDataFrameGenerator(TestSetup):
         dims = [(30, 30), (30, 50), (50, 30)]
         for dim in dims:
             for method in self.dfg.__getmethods__():
-                df = getattr(self.dfg, method)(sample=dim)
+                df = DataFrameGenerator(seed=90210, sample=dim)
+                df = getattr(df, method)()
                 assert df.shape == dim
                 assert np.prod(df.shape) == np.prod(dim)
 
@@ -97,7 +105,7 @@ class TestDataFrameGenerator(TestSetup):
 
         """
         with pt.raises(ValueError):
-            self.dfg.normal_data_frame(sample=(-100, 100))
+            DataFrameGenerator(seed=90210, sample=(-100, 100))
 
     def test_normal_data_frame_produces_data_with_mean_close_to_value(self):
         """

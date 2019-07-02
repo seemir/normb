@@ -7,10 +7,9 @@ from normbatt.util.df_generator import DataFrameGenerator
 from normbatt.normality_battery import NormalityBattery
 import datetime
 
-df = DataFrameGenerator(seed=90210)
+df = DataFrameGenerator(seed=42, sample=(8, 8))
 methods = ['uniform_data_frame', 'normal_data_frame', 'mixed_data_frame']
 now = datetime.datetime.now()
-
 
 for method in methods:
     print("starting method: " + method + "()")
