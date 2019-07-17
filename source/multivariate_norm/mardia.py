@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.multivariate_norm.abstract_normality_test import AbstractNormalityTest
+from source.multivariate_norm.abstract_normality_test import AbstractNormalityTest
 from rpy2.robjects import r
 import gc
 

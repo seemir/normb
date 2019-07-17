@@ -3,7 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.ds_generator import DescriptiveStatisticsGenerator
+from source.util.ds_generator import DescriptiveStatisticsGenerator
+from source.util.abstract_generator import AbstractGenerator
 from tests.test_setup import TestSetup
 import pandas as pd
 import pytest as pt
@@ -21,6 +22,14 @@ class TestDescriptiveStatisticsGenerator(TestSetup):
         self.dss = {}
         for name, df in self.dfs.items():
             self.dss.update({name: DescriptiveStatisticsGenerator(df, dim='col', digits=5)})
+
+    def test_ds_generator_is_subclass_of_abstract_generator(self):
+        """
+        Test that DescriptiveStatisticsGenerator is subclass of AbstractGenerator
+
+        """
+        assert isinstance(self.dfg, AbstractGenerator)
+        assert issubclass(self.dfg.__class__, AbstractGenerator)
 
     def test_typeerror_raised_when_non_pd_dataframe_passed_into_constructor(self):
         """

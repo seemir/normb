@@ -3,7 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.mn_generator import MultivariateNormalityGenerator
+from source.util.mn_generator import MultivariateNormalityGenerator
+from source.util.abstract_generator import AbstractGenerator
 from tests.test_setup import TestSetup
 import pandas as pd
 import pytest as pt
@@ -21,6 +22,14 @@ class TestMultivariateNormalityGenerator(TestSetup):
         self.mng = {}
         for name, df in self.dfs.items():
             self.mng.update({name: MultivariateNormalityGenerator(df, digits=5)})
+
+    def test_mn_generator_is_subclass_of_abstract_generator(self):
+        """
+        Test that MultivariateNormalityGenerator is subclass of AbstractGenerator
+
+        """
+        assert isinstance(self.dfg, AbstractGenerator)
+        assert issubclass(self.dfg.__class__, AbstractGenerator)
 
     def test_typeerror_raised_when_non_pd_dataframe_passed_into_constructor(self):
         """

@@ -3,8 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.normality_battery import NormalityBattery
-from normbatt.util.df_generator import DataFrameGenerator
+from source.normality_battery import NormalityBattery
+from source.util.df_generator import DataFrameGenerator
 from tests.test_setup import TestSetup
 import pytest as pt
 import pandas as pd

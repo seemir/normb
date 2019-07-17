@@ -8,7 +8,7 @@ from distutils.core import setup
 setup(
     name='normb',
     version='',
-    packages=['tests', 'normbatt', 'normbatt.util', 'normbatt.multivariate_norm'],
+    packages=['tests', 'source', 'source.util', 'source.multivariate_norm'],
     requires=['numpy (>= 1.15.4)', 'pytest (>= 4.0.2)', 'pandas (>= 0.24.0)'],
     url='',
     license='MIT',

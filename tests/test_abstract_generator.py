@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.abstract_generator import AbstractGenerator
+from source.util.abstract_generator import AbstractGenerator
 import pytest as pt
 
 

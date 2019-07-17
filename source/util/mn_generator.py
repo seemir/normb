@@ -3,12 +3,12 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.multivariate_norm.doornik_hansen import DoornikHansen
-from normbatt.multivariate_norm.henze_zirkler import HenzeZirkler
-from normbatt.util.abstract_generator import AbstractGenerator
-from normbatt.multivariate_norm.royston import Royston
-from normbatt.multivariate_norm.mardia import Mardia
-from normbatt.multivariate_norm.energy import Energy
+from source.multivariate_norm.doornik_hansen import DoornikHansen
+from source.multivariate_norm.henze_zirkler import HenzeZirkler
+from source.util.abstract_generator import AbstractGenerator
+from source.multivariate_norm.royston import Royston
+from source.multivariate_norm.mardia import Mardia
+from source.multivariate_norm.energy import Energy
 from prettytable import PrettyTable
 
 

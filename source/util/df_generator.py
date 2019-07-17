@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.abstract_generator import AbstractGenerator
+from source.util.abstract_generator import AbstractGenerator
 import pandas as pd
 import numpy as np
 import datetime
@@ -112,6 +112,7 @@ class DataFrameGenerator(AbstractGenerator):
         self.evaluate_data_type({mu: int, sigma: int})
 
         df = pd.DataFrame(np.random.normal(mu, sigma, self.sample))
+
         if excel:
             self.to_excel(df)
         return df
@@ -140,10 +141,11 @@ class DataFrameGenerator(AbstractGenerator):
         np.random.seed(self.seed)
         self.evaluate_data_type({mu: int, sigma: int, limits: tuple})
 
-        original_df = self.uniform_data_frame(limits, self.sample)
-        mixed_df = original_df.append(self.normal_data_frame(mu, sigma, self.sample),
+        original_df = self.uniform_data_frame(limits)
+        mixed_df = original_df.append(self.normal_data_frame(mu, sigma),
                                       ignore_index=True)
         df = mixed_df.apply(np.random.permutation).head(self.sample[0])
+
         if excel:
             self.to_excel(df)
         return df

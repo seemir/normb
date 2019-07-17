@@ -3,15 +3,13 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.df_generator import DataFrameGenerator
-from normbatt.normality_battery import NormalityBattery
-import datetime
+from source.util.df_generator import DataFrameGenerator
+from source.normality_battery import NormalityBattery
 
-df = DataFrameGenerator(seed=42, sample=(8, 8))
-methods = ['uniform_data_frame', 'normal_data_frame', 'mixed_data_frame']
-now = datetime.datetime.now()
+df = DataFrameGenerator(seed=42, sample=(1000, 100))
+methods = df.__getmethods__()
 
 for method in methods:
     print("starting method: " + method + "()")
-    nb = NormalityBattery(getattr(df, method)(sample=(1000, 100)))
+    nb = NormalityBattery(getattr(df, method)())
     nb.print_report()

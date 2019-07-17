@@ -3,19 +3,21 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.multivariate_norm.abstract_normality_test import AbstractNormalityTest
+from source.multivariate_norm.abstract_normality_test import AbstractNormalityTest
 from rpy2.robjects import r
 import gc
 
 
-class Energy(AbstractNormalityTest):
+class DoornikHansen(AbstractNormalityTest):
     """
-    Implements the the Energy E test for multivariate normality
+    Implementation of the Doornik-Hansen test for multivariate normality
+
     """
 
     def __init__(self, df):
         """
         Constructor / Initiate the class
+
         Parameters
         ----------
         df      : pandas.DataFrame
@@ -24,27 +26,28 @@ class Energy(AbstractNormalityTest):
         """
         super().__init__(df)
 
-    def run_e_test(self, boot=100):
+    def run_dh_test(self):
         """
-        Runs the Energy E test for multivariate normality by delegating the task to the
+        Runs the Doornik-Hansen test for multivariate normality by delegating the task to the
         MVN module in r
 
         """
         r('require("MVN", character.only = TRUE)')
         r.assign("df", self.df)
-        r('res <- mvn(df, mvnTest = "energy", R = {})'.format(boot))
+        r('res <- mvn(df, mvnTest = "dh")')
         gc.collect()
 
     def print_results(self):
         """
         Gets the dh test statistic and p-value
+
         Returns
         -------
         Out     : tuple
-                  (e test statistic, p-value)
+                  (dh test statistic, p-value)
 
         """
-        self.run_e_test()
-        dh = r('as.numeric(res$multivariateNormality[2])')
+        self.run_dh_test()
+        dh = r('as.numeric(res$multivariateNormality["E"])')
         p_dh = r('as.numeric(res$multivariateNormality["p value"])')
         return tuple(list(dh) + list(p_dh))

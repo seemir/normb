@@ -3,7 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from normbatt.util.df_generator import DataFrameGenerator
+from source.util.df_generator import DataFrameGenerator
+from source.util.df_generator import AbstractGenerator
 from tests.test_setup import TestSetup
 import pandas as pd
 import pytest as pt
@@ -12,6 +13,14 @@ import os
 
 
 class TestDataFrameGenerator(TestSetup):
+
+    def test_df_generator_is_subclass_of_abstract_generator(self):
+        """
+        Test that DataFrameGenerator is subclass of AbstractGenerator
+
+        """
+        assert isinstance(self.dfg, AbstractGenerator)
+        assert issubclass(self.dfg.__class__, AbstractGenerator)
 
     def test_raise_typeerror_when_seed_is_not_int(self):
         """
@@ -70,11 +79,12 @@ class TestDataFrameGenerator(TestSetup):
         Static to_excel() method produces excel file with dataframe
 
         """
-        input_df = pd.DataFrame(np.random.rand(30, 30))
-        file_dir = 'reports/xlsx'
-        self.dfg.to_excel(df=input_df, file_dir=file_dir)
-        saved_df = pd.read_excel(file_dir + '/' + os.listdir(file_dir)[-1], index_col=0)
-        pd.testing.assert_frame_equal(saved_df, input_df)
+        for df in self.dfs.values():
+            input_df = pd.DataFrame(df)
+            file_dir = 'reports/xlsx'
+            self.dfg.to_excel(df=input_df, file_dir=file_dir)
+            saved_df = pd.read_excel(file_dir + '/' + os.listdir(file_dir)[-1], index_col=0)
+            pd.testing.assert_frame_equal(saved_df, input_df)
 
     def test_os_error_is_thrown_when_dir_cannot_be_created(self):
         """
