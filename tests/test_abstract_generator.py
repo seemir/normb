@@ -3,6 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from source.exceptions.base_class_exception import BaseClassCannotBeInstantiated
 from source.util.abstract_generator import AbstractGenerator
 import pytest as pt
 
@@ -15,7 +16,7 @@ class TestAbstractGenerator:
         TypeError is thrown
 
         """
-        with pt.raises(TypeError):
+        with pt.raises(BaseClassCannotBeInstantiated):
             ag = AbstractGenerator()
 
     def test_access_static_evaluate_pd_dataframe_method(self):

@@ -3,6 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from source.exceptions.base_class_exception import BaseClassCannotBeInstantiated
 from source.util.df_generator import DataFrameGenerator
 from rpy2.robjects import r, numpy2ri
 import numpy as np
@@ -15,7 +16,7 @@ class AbstractNormalityTest:
 
     """
 
-    def __init__(self, df):
+    def __init__(self, df=None):
         """
         Constructor / Initiate the class
 
@@ -26,7 +27,8 @@ class AbstractNormalityTest:
 
         """
         if type(self) == AbstractNormalityTest:
-            raise TypeError("base class cannot be instantiated")
+            raise BaseClassCannotBeInstantiated(
+                "base class '{}' cannot be instantiated".format(self.__class__.__name__))
 
         DataFrameGenerator.evaluate_pd_dataframe(df)
         r('if (!is.element("MVN", installed.packages()[,1])){ '

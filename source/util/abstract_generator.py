@@ -3,6 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from source.exceptions.base_class_exception import BaseClassCannotBeInstantiated
 from bisect import bisect_left
 import pandas as pd
 import inspect
@@ -64,7 +65,8 @@ class AbstractGenerator:
 
         """
         if type(self) == AbstractGenerator:
-            raise TypeError("base class AbstractGenerator cannot be instantiated")
+            raise BaseClassCannotBeInstantiated(
+                "base class '{}' cannot be instantiated".format(self.__class__.__name__))
 
         if any(dim < 0 for dim in sample):
             raise ValueError("dimensions in sample cannot be negative")
