@@ -27,4 +27,4 @@ class TestAbstractNormalityTest(TestSetup):
         """
         for df in self.dfs.values():
             with pt.raises(BaseClassCannotBeInstantiated):
-                ab = AbstractNormalityTest(df=df)
+                AbstractNormalityTest(df=df)

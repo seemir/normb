@@ -15,7 +15,7 @@ class DescriptiveStatisticsGenerator(AbstractGenerator):
 
     """
 
-    def __init__(self, df, dim, digits):
+    def __init__(self, df, dim='col', digits=5):
         """
         Constructor / Initiate the class
 
@@ -65,12 +65,11 @@ class DescriptiveStatisticsGenerator(AbstractGenerator):
         vectors = self.df.iteritems() if self.dim == "col" else self.df.iterrows()
 
         for i, vector in vectors:
-            desc_row = [rnd(i + 1, d),
-                        rnd(np.mean(vector), d), rnd(np.median(vector), d),
-                        rnd(np.var(vector), d), rnd(np.std(vector), d),
-                        rnd(stats.kurtosis(vector), d), rnd(stats.skew(vector), d),
-                        rnd(min(vector), d), rnd(max(vector), d),
-                        rnd(np.quantile(vector, 0.95), d)]
+            desc_row = [rnd(param, d) for param in
+                        [i + 1, np.mean(vector), np.median(vector),
+                        np.var(vector), np.std(vector),
+                        stats.kurtosis(vector), stats.skew(vector),
+                        min(vector), max(vector), np.quantile(vector, 0.95)]]
             desc_table.add_row(desc_row)
             desc_table.align = "r"
 

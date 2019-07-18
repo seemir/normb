@@ -17,7 +17,7 @@ class TestAbstractGenerator:
 
         """
         with pt.raises(BaseClassCannotBeInstantiated):
-            ag = AbstractGenerator()
+            AbstractGenerator()
 
     def test_access_static_evaluate_pd_dataframe_method(self):
         """

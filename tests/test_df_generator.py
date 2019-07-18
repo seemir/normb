@@ -32,7 +32,7 @@ class TestDataFrameGenerator(TestSetup):
         for seed in invalid_seeds:
             pt.raises(TypeError, self.dfg, seed)
 
-    def seed_get_configured(self):
+    def seed_gets_configured(self):
         """
         Test that seed gets configured when passed through constructor
 
@@ -61,7 +61,7 @@ class TestDataFrameGenerator(TestSetup):
         """
         for method in self.dfs.keys():
             mocker.spy(DataFrameGenerator, method)
-            df_method = getattr(self.dfg, method)()
+            getattr(self.dfg, method)()
             assert getattr(DataFrameGenerator, method).call_count == 1
 
     def test_typeerror_raised_when_non_pd_dataframe_passed_in_to_excel(self):

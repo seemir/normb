@@ -29,4 +29,3 @@ class TestSetup:
                                ['jb', 'p-value (jb)', 'k2', 'p-value (k2)', 'ks', 'p-value (ks)',
                                 'sw', 'p-value (sw)']
                                ]))
-

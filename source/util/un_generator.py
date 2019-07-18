@@ -14,7 +14,7 @@ class UnivariateNormalityGenerator(AbstractGenerator):
 
     """
 
-    def __init__(self, df, dim, digits):
+    def __init__(self, df, dim='col', digits=5):
         """
         Constructor / Initiate the class
 
