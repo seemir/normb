@@ -32,13 +32,13 @@ class NormalityBattery:
         DataFrameGenerator.evaluate_pd_dataframe(df)
         if np.prod(df.shape) < 8:
             raise ValueError(
-                "pd.DataFrame must have more that 8 observations inorder to conduct any "
+                "pd.DataFrame must have more than 8 observations in order to conduct any "
                 "normality test, got {}".format(df.count()))
         self.df = df
 
-    def print_descriptive_statistics(self, dim='col', digits=5):
+    def descriptive_statistics(self, dim='col', digits=5):
         """
-        Get string of descriptive statistics
+        Gets descriptive statistics
 
         Parameters
         ----------
@@ -57,7 +57,7 @@ class NormalityBattery:
         ds = DescriptiveStatisticsGenerator(self.df, dim=dim, digits=digits)
         return ds.generate_descriptive_statistics()
 
-    def print_univariate_normality(self, dim='col', digits=5):
+    def univariate_normality(self, dim='col', digits=5):
         """
         Checks to see if the values in the rows or columns of a dataframe are univariate normally
         distributed using Jarque-Bera, D’Agostino / Pearson’s, Kolmogorov–Smirnov and Shapiro-Wilk.
@@ -79,7 +79,7 @@ class NormalityBattery:
         un = UnivariateNormalityGenerator(self.df, dim=dim, digits=digits)
         return un.generate_univariate_normality_results()
 
-    def print_multivariate_normality(self, digits=5):
+    def multivariate_normality(self, digits=5):
         """
         Check to see if values of numeric DataFrame follows a multivariate normal distribution
 
@@ -97,7 +97,7 @@ class NormalityBattery:
         mn = MultivariateNormalityGenerator(self.df, digits=digits)
         return mn.generate_multivariate_normality_results()
 
-    def print_report(self, file_dir="reports/txt", dim='col', digits=5, ds=False):
+    def normality_report(self, file_dir="reports/txt", dim='col', digits=5, ds=False):
         """
         Method that prints a report containing the results of the Normality tests
 
@@ -126,12 +126,12 @@ class NormalityBattery:
         local_time = datetime.datetime.now().isoformat().replace(":", "-").replace(".", "-")
         file = open(os.path.join(file_dir, "NormalityReport_" + local_time + ".txt"), "w")
         if ds:
-            file.write(self.print_descriptive_statistics(dim, digits) + '\n')
-            file.write(self.print_multivariate_normality(digits) + '\n')
-            file.write(self.print_univariate_normality(dim, digits))
+            file.write(self.descriptive_statistics(dim, digits) + '\n')
+            file.write(self.multivariate_normality(digits) + '\n')
+            file.write(self.univariate_normality(dim, digits))
         else:
-            file.write(self.print_multivariate_normality(digits) + '\n')
-            file.write(self.print_univariate_normality(dim, digits))
+            file.write(self.multivariate_normality(digits) + '\n')
+            file.write(self.univariate_normality(dim, digits))
         file.close()
 
     def __getmethods__(self):
@@ -146,4 +146,4 @@ class NormalityBattery:
 
         """
         return [method[0] for method in inspect.getmembers(self, predicate=inspect.ismethod) if
-                method[0] not in ['__init__', 'print_report', '__getmethods__']]
+                method[0] not in ['__init__', 'normality_report', '__getmethods__']]

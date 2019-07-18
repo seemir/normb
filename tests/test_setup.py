@@ -18,7 +18,7 @@ class TestSetup:
 
         cls.seed = 90210
         cls.file_dir = 'reports/txt'
-        cls.dfg = DataFrameGenerator(seed=cls.seed, sample=(8, 8))
+        cls.dfg = DataFrameGenerator(seed=cls.seed, size=(8, 8))
         cls.dfs = {method: getattr(cls.dfg, method)() for method in cls.dfg.__getmethods__()}
         cls.nbs = {method: NormalityBattery(df) for method, df in cls.dfs.items()}
         cls.params = dict(zip(list(cls.nbs.values())[0].__getmethods__(),

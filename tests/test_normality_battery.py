@@ -44,7 +44,7 @@ class TestNormalityBattery(TestSetup):
 
         """
         for method in self.dfs.keys():
-            test_df = getattr(DataFrameGenerator(seed=90210, sample=(2, 2)), method)()
+            test_df = getattr(DataFrameGenerator(seed=90210, size=(2, 2)), method)()
             with pt.raises(ValueError):
                 NormalityBattery(test_df)
 
@@ -79,14 +79,14 @@ class TestNormalityBattery(TestSetup):
         invalid_file_dir = '._?`/1234'  # Invalid dir name
         for nb in self.nbs.values():
             with pt.raises(OSError):
-                nb.print_report(file_dir=invalid_file_dir)
+                nb.normality_report(file_dir=invalid_file_dir)
 
     def test_dir_gets_created_for_reports(self):
         """
         Test that directory gets produced when running print_report() method
 
         """
-        list(self.nbs.values())[0].print_report()
+        list(self.nbs.values())[0].normality_report()
         assert os.path.isdir('reports/txt')
 
     def test_ds_included_in_report(self):
@@ -95,10 +95,10 @@ class TestNormalityBattery(TestSetup):
         method
 
         """
-        list(self.nbs.values())[0].print_report(ds=True)
+        list(self.nbs.values())[0].normality_report(ds=True)
         with open(self.file_dir + '/' + os.listdir(self.file_dir)[-1], 'r') as file:
             data = file.read().replace('\n', '')
-            assert all(param in data for param in self.params['print_descriptive_statistics'])
+            assert all(param in data for param in self.params['descriptive_statistics'])
 
     def test_ds_not_included_in_report(self):
         """

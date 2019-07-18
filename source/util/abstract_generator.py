@@ -47,7 +47,7 @@ class AbstractGenerator:
                 raise TypeError(
                     "Expected type '{}', got '{}' instead".format(t.__name__, type(arg).__name__))
 
-    def __init__(self, dim='col', digits=5, seed=90210, sample=(30, 30)):
+    def __init__(self, dim='col', digits=5, seed=90210, size=(30, 30)):
         """
         Constructor / Initiate the class
 
@@ -60,7 +60,7 @@ class AbstractGenerator:
                   number of decimal places to round down
         seed    : int
                   User can set a seed parameter to generate deterministic, non-random output
-        sample  : tuple of integers, integer
+        size    : tuple of integers, integer
                   dimensions or range of numbers in generated df, default is (30, 30)
 
         """
@@ -68,14 +68,14 @@ class AbstractGenerator:
             raise BaseClassCannotBeInstantiated(
                 "base class '{}' cannot be instantiated".format(self.__class__.__name__))
 
-        if any(dim < 0 for dim in sample):
-            raise ValueError("dimensions in sample cannot be negative")
+        if any(dim < 0 for dim in size):
+            raise ValueError("dimensions in size cannot be negative")
 
         self.evaluate_data_type({dim: str, digits: int, seed: int})
         self.dim = dim
         self.digits = digits
         self.seed = seed
-        self.sample = sample
+        self.size = size
 
     def astrix(self, p_value):
         """

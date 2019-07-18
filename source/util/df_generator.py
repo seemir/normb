@@ -17,7 +17,7 @@ class DataFrameGenerator(AbstractGenerator):
 
     """
 
-    def __init__(self, seed, sample):
+    def __init__(self, seed, size):
         """
         Initiates the class
 
@@ -25,10 +25,12 @@ class DataFrameGenerator(AbstractGenerator):
         ----------
         seed    : int
                   User can set a seed parameter to generate deterministic, non-random output
+        size    : tuple of integers, integer
+                  dimensions or range of numbers in generated df, default is (30, 30)
 
         """
-        self.evaluate_data_type({seed: int, sample: tuple})
-        super().__init__(seed=seed, sample=sample)
+        self.evaluate_data_type({seed: int, size: tuple})
+        super().__init__(seed=seed, size=size)
 
     def to_excel(self, df, file_dir="reports/xlsx", header=True, index=True):
         """
@@ -60,10 +62,10 @@ class DataFrameGenerator(AbstractGenerator):
 
         df.to_excel(filepath, header=header, index=index)
 
-    def uniform_data_frame(self, limits=(-1, 1), excel=None):
+    def uniform_data_frame(self, limits=(-1, 1), excel=False):
         """
         Method that produces a df containing uniformly distributed floating point values between
-        'limits' and of dimensions defined in 'sample' argument.
+        'limits' and of dimensions defined in 'size' argument.
 
         Parameters
         ----------
@@ -75,23 +77,23 @@ class DataFrameGenerator(AbstractGenerator):
         Returns
         -------
         Out     : pandas.DataFrame
-                  n x 1 (if sample is integer) or n x m (if sample is tuple) dimensional df
+                  n x 1 (if size is integer) or n x m (if size is tuple) dimensional df
 
         """
         np.random.seed(self.seed)
         self.evaluate_data_type({limits: tuple})
 
         lower, upper = limits
-        df = pd.DataFrame(np.random.uniform(lower, upper, self.sample))
+        df = pd.DataFrame(np.random.uniform(lower, upper, self.size))
 
         if excel:
             self.to_excel(df)
         return df
 
-    def normal_data_frame(self, mu=0, sigma=1, excel=None):
+    def normal_data_frame(self, mu=0, sigma=1, excel=False):
         """
         Method that produces a df containing normally distributed floating point values with mean
-        equal 'mu' and st.dev equal 'sigma' and dimensions defined by 'sample'.
+        equal 'mu' and st.dev equal 'sigma' and dimensions defined by 'size'.
 
         Parameters
         ----------
@@ -105,19 +107,19 @@ class DataFrameGenerator(AbstractGenerator):
         Returns
         -------
         Out     : pandas.DataFrame
-                  n x 1 (if sample is integer) or n x m (if sample is tuple) dimensional df
+                  n x 1 (if size is integer) or n x m (if size is tuple) dimensional df
 
         """
         np.random.seed(self.seed)
         self.evaluate_data_type({mu: int, sigma: int})
 
-        df = pd.DataFrame(np.random.normal(mu, sigma, self.sample))
+        df = pd.DataFrame(np.random.normal(mu, sigma, self.size))
 
         if excel:
             self.to_excel(df)
         return df
 
-    def mixed_data_frame(self, mu=0, sigma=1, limits=(-1, 1), excel=None):
+    def mixed_data_frame(self, mu=0, sigma=1, limits=(-1, 1), excel=False):
         """
         Generates a df with an equal mix of uniformly and normally distributed values.
 
@@ -135,7 +137,7 @@ class DataFrameGenerator(AbstractGenerator):
         Returns
         -------
         Out     : pandas.DataFrame
-                  n x 1 (if sample is integer) or n x m (if sample is tuple) dimensional df
+                  n x 1 (if size is integer) or n x m (if size is tuple) dimensional df
 
         """
         np.random.seed(self.seed)
@@ -144,7 +146,7 @@ class DataFrameGenerator(AbstractGenerator):
         original_df = self.uniform_data_frame(limits)
         mixed_df = original_df.append(self.normal_data_frame(mu, sigma),
                                       ignore_index=True)
-        df = mixed_df.apply(np.random.permutation).head(self.sample[0])
+        df = mixed_df.apply(np.random.permutation).head(self.size[0])
 
         if excel:
             self.to_excel(df)

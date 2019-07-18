@@ -51,7 +51,7 @@ class TestDataFrameGenerator(TestSetup):
         correct_dfs = [pd.DataFrame(np.array(arr)) for arr in arrays]
 
         for i, method in enumerate(self.dfg.__getmethods__()):
-            test_df = getattr(DataFrameGenerator(seed=90210, sample=(2, 2)), method)()
+            test_df = getattr(DataFrameGenerator(seed=90210, size=(2, 2)), method)()
             pd.testing.assert_frame_equal(test_df, correct_dfs[i])
 
     def test_correct_number_of_calls_made_to_method(self, mocker):
@@ -104,7 +104,7 @@ class TestDataFrameGenerator(TestSetup):
         dims = [(30, 30), (30, 50), (50, 30)]
         for dim in dims:
             for method in self.dfg.__getmethods__():
-                df = DataFrameGenerator(seed=90210, sample=dim)
+                df = DataFrameGenerator(seed=90210, size=dim)
                 df = getattr(df, method)()
                 assert df.shape == dim
                 assert np.prod(df.shape) == np.prod(dim)
@@ -115,7 +115,7 @@ class TestDataFrameGenerator(TestSetup):
 
         """
         with pt.raises(ValueError):
-            DataFrameGenerator(seed=90210, sample=(-100, 100))
+            DataFrameGenerator(seed=90210, size=(-100, 100))
 
     def test_normal_data_frame_produces_data_with_mean_close_to_value(self):
         """
