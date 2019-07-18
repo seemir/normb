@@ -72,6 +72,5 @@ class UnivariateNormalityGenerator(AbstractGenerator):
                         rnd(sw, d), self.astrix(rnd(p_sw, d))]
 
             unorm_table.add_row(norm_row)
-            unorm_table.align = "r"
-
+        unorm_table.align = "r"
         return str(unorm_table)

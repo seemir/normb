@@ -71,6 +71,5 @@ class DescriptiveStatisticsGenerator(AbstractGenerator):
                         stats.kurtosis(vector), stats.skew(vector),
                         min(vector), max(vector), np.quantile(vector, 0.95)]]
             desc_table.add_row(desc_row)
-            desc_table.align = "r"
-
+        desc_table.align = "r"
         return str(desc_table)

@@ -50,7 +50,7 @@ class MultivariateNormalityGenerator(AbstractGenerator):
         """
         self.evaluate_data_type({self.digits: int})
 
-        multi_norm_table = PrettyTable(hrules=3, vrules=2)
+        multi_norm_table = PrettyTable(vrules=2, hrules=3)
         rnd, d = round, self.digits
 
         multi_norm_header_name = ['', 't1', 'p-value (t1)', 't2', 'p-value (t2)']
@@ -81,7 +81,5 @@ class MultivariateNormalityGenerator(AbstractGenerator):
                               '', ''
                               ]
             multi_norm_table.add_row(multi_norm_row)
-
         multi_norm_table.align = "r"
-
         return str(multi_norm_table)
