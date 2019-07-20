@@ -53,7 +53,13 @@ class MultivariateNormalityGenerator(AbstractGenerator):
         multi_norm_table = PrettyTable(vrules=2, hrules=3)
         rnd, d = round, self.digits
 
-        multi_norm_header_name = ['', 't1', 'p-value (t1)', 't2', 'p-value (t2)']
+        multi_norm_header_name = ['-',
+                                  '           t1',
+                                  'p-value (t1)',
+                                  '           t2',
+                                  'p-value (t2)',
+                                  '           '
+                                  ]
         multi_norm_table.field_names = multi_norm_header_name
 
         # Add Mardia results
@@ -64,7 +70,7 @@ class MultivariateNormalityGenerator(AbstractGenerator):
                                  self.astrix(rnd(mardia_results[1], d)),
                                  rnd(mardia_results[2], d),
                                  self.astrix(rnd(mardia_results[3], d)),
-                                 ]
+                                 '']
         multi_norm_table.add_row(multi_norm_mardia_row)
 
         # Add rest of the results
@@ -78,7 +84,7 @@ class MultivariateNormalityGenerator(AbstractGenerator):
             multi_norm_row = [name,
                               rnd(method_results[0], d),
                               self.astrix(rnd(method_results[1], d)),
-                              '', ''
+                              '', '', ''
                               ]
             multi_norm_table.add_row(multi_norm_row)
         multi_norm_table.align = "r"

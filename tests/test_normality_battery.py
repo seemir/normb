@@ -13,13 +13,6 @@ import os
 
 class TestNormalityBattery(TestSetup):
 
-    def test_all_dfg_are_of_instance_dataframegenerator(self):
-        """
-        Test correct dataframe generator type is created
-
-        """
-        assert isinstance(self.dfg, DataFrameGenerator)
-
     def test_all_normalitybattery_instances_are_of_type_normalitybattery(self):
         """
         Test that all the normality battery instances are of type NormalityBattery()
@@ -58,10 +51,10 @@ class TestNormalityBattery(TestSetup):
                 if i == j:
                     pd.testing.assert_frame_equal(df, nb.df)
 
-    def test_printing_methods(self):
+    def test_results_methods(self):
         """
-        Test that all the printing methods (print_descriptive_statistics,
-        print_univariate_normality etc.) produces str object with correct
+        Test that all the printing methods (descriptive_statistics,
+        univariate_normality etc.) produces str object with correct
         parameters
 
         """

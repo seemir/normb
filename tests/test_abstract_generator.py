@@ -13,7 +13,7 @@ class TestAbstractGenerator:
     def test_abstract_generator_cannot_be_instantiated(self):
         """
         Test that the base class (AbstractGenerator) cannot be instantiated, i.e. an
-        TypeError is thrown
+        BaseClassCannotBeInstantiated exception is thrown
 
         """
         with pt.raises(BaseClassCannotBeInstantiated):

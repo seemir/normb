@@ -7,6 +7,7 @@ from source.util.ds_generator import DescriptiveStatisticsGenerator
 from source.util.mn_generator import MultivariateNormalityGenerator
 from source.util.un_generator import UnivariateNormalityGenerator
 from source.util.df_generator import DataFrameGenerator
+from prettytable import PrettyTable
 import numpy as np
 import inspect
 import datetime
@@ -18,6 +19,33 @@ class NormalityBattery:
     Battery of univariate normality tests on row or column vectors of pandas.DataFrame
 
     """
+
+    @staticmethod
+    def count_astrix(string):
+        """
+        Count the number of statistical tests that passed based on the astrix notation
+
+        Parameters
+        ----------
+        string  : str
+                  string with results
+
+        Returns
+        -------
+        Out     : int
+                  number of statistical tests that have passed
+        """
+        string = ' ' + string + ' '
+        counts = []
+        temper = []
+        for char in string:
+            if char == '*':
+                temper.append(char)
+                continue
+            else:
+                counts.append(temper)
+                temper = []
+        return len([count for count in counts if count != []])
 
     def __init__(self, df):
         """
@@ -97,6 +125,62 @@ class NormalityBattery:
         mn = MultivariateNormalityGenerator(self.df, digits=digits)
         return mn.generate_multivariate_normality_results()
 
+    def results_summary(self, dim='col', digits=5):
+        """
+        Summaries results of statistical tests
+
+        Parameters
+        ----------
+        dim         : string
+                      indicate whether one wants to test for normality along the columns
+                      'col' or rows 'row', default is 'col'
+        digits      : integer
+                      number of decimal places to round down
+
+        Returns
+        -------
+        out         : tuple
+                      (summary, un, mn-objects)
+
+        """
+        DataFrameGenerator.evaluate_data_type({dim: str, digits: int})
+
+        rnd, d = round, digits
+        mn = self.multivariate_normality(d)
+        un = self.univariate_normality(dim, d)
+
+        mn_tot = 6
+        mn_pass = self.count_astrix(mn)
+        mn_fail = mn_tot - mn_pass
+        mn_pr, mn_fr = rnd(mn_pass / mn_tot, d), rnd(1 - mn_pass / mn_tot, d)
+
+        un_tot = 4 * self.df.shape[1] if dim == 'col' else 4 * self.df.shape[0]
+        un_pass = self.count_astrix(un)
+        un_fail = un_tot - un_pass
+        un_pr, un_fr = rnd(un_pass / un_tot, d), rnd(1 - un_pass / un_tot, d)
+
+        tot = mn_tot + un_tot
+        passed, failed = mn_pass + un_pass, mn_fail + un_fail
+        tot_pr, tot_fr = rnd(passed / tot, d), rnd(failed / tot, d)
+
+        summary = PrettyTable(vrules=2)
+        summary.field_names = ['',
+                               '    conducted',
+                               'inconclusive',
+                               '     (i-rate)',
+                               '  conclusive',
+                               '   (c-rate)'
+                               ]
+
+        summary.add_row(['  multivariate', '6', str(mn_pass), str(mn_pr), str(mn_fail), str(mn_fr)])
+        summary.add_row(
+            ['  univariate', un_tot, str(un_pass), str(un_pr), str(un_fail), str(un_fr)])
+
+        summary.add_row(['', '- - - - -', '- - - - -', '- - - - -', '- - - - -', '- - - - -'])
+        summary.add_row(['total', str(tot), str(passed), str(tot_pr), str(failed), str(tot_fr)])
+        summary.align = 'r'
+        return str(summary), mn, un
+
     def normality_report(self, file_dir="reports/txt", dim='col', digits=5, ds=False):
         """
         Method that prints a report containing the results of the Normality tests
@@ -125,13 +209,17 @@ class NormalityBattery:
 
         local_time = datetime.datetime.now().isoformat().replace(":", "-").replace(".", "-")
         file = open(os.path.join(file_dir, "NormalityReport_" + local_time + ".txt"), "w")
+        summary, mn, un = self.results_summary(dim=dim, digits=digits)
+
         if ds:
-            file.write(self.descriptive_statistics(dim, digits) + '\n')
-            file.write(self.multivariate_normality(digits) + '\n')
-            file.write(self.univariate_normality(dim, digits))
+            file.write(summary + '\n')
+            file.write(mn + '\n')
+            file.write(un + '\n')
+            file.write(self.descriptive_statistics(dim, digits))
         else:
+            file.write(summary + '\n')
             file.write(self.multivariate_normality(digits) + '\n')
-            file.write(self.univariate_normality(dim, digits))
+            file.write(self.univariate_normality(dim, digits) + '\n')
         file.close()
 
     def __getmethods__(self):
@@ -146,4 +234,5 @@ class NormalityBattery:
 
         """
         return [method[0] for method in inspect.getmembers(self, predicate=inspect.ismethod) if
-                method[0] not in ['__init__', 'normality_report', '__getmethods__']]
+                method[0] not in ['__init__', 'normality_report', 'results_summary',
+                                  '__getmethods__']]

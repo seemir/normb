@@ -52,11 +52,12 @@ class UnivariateNormalityGenerator(AbstractGenerator):
         rnd, d = round, self.digits
         dim_name = 'col' if self.dim == 'col' else 'row'
 
-        norm_header_names = [dim_name,
-                             'jb', 'p-value (jb)',
-                             'k2', 'p-value (k2)',
-                             'ks', 'p-value (ks)',
-                             'sw', 'p-value (sw)']
+        norm_header_names = ['        ',
+                             dim_name,
+                             '           jb', 'p-value (jb)',
+                             '           k2', 'p-value (k2)',
+                             '           ks', 'p-value (ks)',
+                             '           sw', 'p-value (sw)']
         unorm_table.field_names = norm_header_names
 
         vectors = self.df.iteritems() if self.dim == "col" else self.df.iterrows()
@@ -65,7 +66,7 @@ class UnivariateNormalityGenerator(AbstractGenerator):
             k2, p_pr, = stats.normaltest(vector)
             ks, p_ks = stats.kstest(vector, cdf='norm')
             sw, p_sw = stats.shapiro(vector)
-            norm_row = [rnd(i + 1, d),
+            norm_row = ['', rnd(i + 1, d),
                         rnd(jb, d), self.astrix(rnd(p_jb, d)),
                         rnd(k2, d), self.astrix(rnd(p_pr, d)),
                         rnd(ks, d), self.astrix(rnd(p_ks, d)),
