@@ -53,7 +53,7 @@ class MultivariateNormalityGenerator(AbstractGenerator):
         multi_norm_table = PrettyTable(vrules=2, hrules=3)
         rnd, d = round, self.digits
 
-        multi_norm_header_name = ['-',
+        multi_norm_header_name = ['',
                                   '        t1',
                                   'p-value (t1)',
                                   '        t2',

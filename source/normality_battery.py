@@ -59,18 +59,20 @@ class NormalityBattery:
         -------
         Out     : int
                   number of statistical tests that have passed
+
         """
-        string = ' ' + string + ' '
-        counts = []
-        temper = []
-        for char in string:
-            if char == '*':
-                temper.append(char)
-                continue
+        count = 0
+        temp = []
+        for char in string + ' ':
+            if char != '*':
+                if not temp:
+                    continue
+                else:
+                    count += 1
+                    temp = []
             else:
-                counts.append(temper)
-                temper = []
-        return len([count for count in counts if count != []])
+                temp.append(char)
+        return count
 
     def __init__(self, df):
         """
