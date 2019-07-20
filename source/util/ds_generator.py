@@ -49,27 +49,31 @@ class DescriptiveStatisticsGenerator(AbstractGenerator):
                   String of descriptive statistics
 
         """
-        desc_table = PrettyTable(vrules=2)
+        desc_table = PrettyTable(vrules=2, hrules=3)
         rnd, d = round, self.digits
         dim_name = 'col' if self.dim == 'col' else 'row'
 
-        decs_header_names = [dim_name,
-                             'mean', 'median',
-                             'variance', 'stdev',
-                             'kurtosis', 'skewness',
-                             'min', 'max',
-                             'quant (95%)']
+        decs_header_names = ['        ',
+                             dim_name,
+                             '      mean',
+                             '      median',
+                             '  variance',
+                             '       stdev',
+                             '  kurtosis',
+                             '    skewness',
+                             '       min',
+                             '         max']
 
         desc_table.field_names = decs_header_names
 
         vectors = self.df.iteritems() if self.dim == "col" else self.df.iterrows()
 
         for i, vector in vectors:
-            desc_row = [rnd(param, d) for param in
-                        [i + 1, np.mean(vector), np.median(vector),
-                        np.var(vector), np.std(vector),
-                        stats.kurtosis(vector), stats.skew(vector),
-                        min(vector), max(vector), np.quantile(vector, 0.95)]]
+            desc_row = [''] + [rnd(param, d) for param in
+                               [i + 1, np.mean(vector), np.median(vector),
+                                np.var(vector), np.std(vector),
+                                stats.kurtosis(vector), stats.skew(vector),
+                                min(vector), max(vector)]]
             desc_table.add_row(desc_row)
         desc_table.align = "r"
         return str(desc_table)

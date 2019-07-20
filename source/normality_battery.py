@@ -4,7 +4,7 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 __copyright__ = """
 The MIT License (MIT)
-Copyright (c) 2007-2018
+Copyright (c) 2007-2019
     Samir Adrik <samir.adrik@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
