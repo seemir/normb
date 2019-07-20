@@ -83,10 +83,10 @@ class NormalityBattery:
 
         """
         DataFrameGenerator.evaluate_pd_dataframe(df)
-        if np.prod(df.shape) < 8:
+        if np.prod(df.shape) < 400:
             raise ValueError(
-                "pd.DataFrame must have more than 8 observations in order to conduct any "
-                "normality test, got {}".format(df.count()))
+                "pd.DataFrame must have at least 400 observations, i.e. (20 x 20) in order to "
+                "conduct any meaningful normality tests, got {}".format(df.shape))
         self.df = df
 
     def descriptive_statistics(self, dim='col', digits=5):

@@ -32,7 +32,7 @@ class TestNormalityBattery(TestSetup):
 
     def test_valueerror_raised_when_less_than_eight_observational_df_passed(self):
         """
-        Test that ValueError is raised when less than 8 observational df is passed through
+        Test that ValueError is raised when less than 20x20 observational df is passed through
         the NormalityBattery() class.
 
         """
