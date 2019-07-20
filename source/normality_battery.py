@@ -2,12 +2,37 @@
 
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
+__copyright__ = """
+The MIT License (MIT)
+Copyright (c) 2007-2018
+    Samir Adrik <samir.adrik@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+"""
 
 from source.util.ds_generator import DescriptiveStatisticsGenerator
 from source.util.mn_generator import MultivariateNormalityGenerator
 from source.util.un_generator import UnivariateNormalityGenerator
 from source.util.df_generator import DataFrameGenerator
 from prettytable import PrettyTable
+from pyfiglet import Figlet
+from .version import __version__
 import numpy as np
 import inspect
 import datetime
@@ -165,11 +190,11 @@ class NormalityBattery:
 
         summary = PrettyTable(vrules=2)
         summary.field_names = ['',
-                               '    conducted',
+                               ' conducted',
                                'inconclusive',
-                               '     (i-rate)',
+                               '  (i-rate)',
                                '  conclusive',
-                               '   (c-rate)'
+                               '  (c-rate)'
                                ]
 
         summary.add_row(['  multivariate', '6', str(mn_pass), str(mn_pr), str(mn_fail), str(mn_fr)])
@@ -210,13 +235,21 @@ class NormalityBattery:
         local_time = datetime.datetime.now().isoformat().replace(":", "-").replace(".", "-")
         file = open(os.path.join(file_dir, "NormalityReport_" + local_time + ".txt"), "w")
         summary, mn, un = self.results_summary(dim=dim, digits=digits)
+        figlet = Figlet(font="slant")
+        title = figlet.renderText("normb")
 
         if ds:
+            file.write(title)
+            file.write('Version: ' + __version__ + '\n')
+            file.write(__copyright__)
             file.write(summary + '\n')
             file.write(mn + '\n')
             file.write(un + '\n')
             file.write(self.descriptive_statistics(dim, digits))
         else:
+            file.write(title)
+            file.write('Version: ' + __version__ + '\n')
+            file.write(__copyright__)
             file.write(summary + '\n')
             file.write(self.multivariate_normality(digits) + '\n')
             file.write(self.univariate_normality(dim, digits) + '\n')

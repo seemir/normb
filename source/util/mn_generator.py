@@ -54,11 +54,11 @@ class MultivariateNormalityGenerator(AbstractGenerator):
         rnd, d = round, self.digits
 
         multi_norm_header_name = ['-',
-                                  '           t1',
+                                  '        t1',
                                   'p-value (t1)',
-                                  '           t2',
+                                  '        t2',
                                   'p-value (t2)',
-                                  '           '
+                                  '          '
                                   ]
         multi_norm_table.field_names = multi_norm_header_name
 

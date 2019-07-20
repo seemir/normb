@@ -12,4 +12,4 @@ methods = df.__getmethods__()
 for method in methods:
     print("starting method: " + method + "()")
     nb = NormalityBattery(getattr(df, method)())
-    nb.normality_report(digits=6)
+    nb.normality_report(digits=3)

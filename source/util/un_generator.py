@@ -54,10 +54,10 @@ class UnivariateNormalityGenerator(AbstractGenerator):
 
         norm_header_names = ['        ',
                              dim_name,
-                             '           jb', 'p-value (jb)',
-                             '           k2', 'p-value (k2)',
-                             '           ks', 'p-value (ks)',
-                             '           sw', 'p-value (sw)']
+                             '        jb', 'p-value (jb)',
+                             '        k2', 'p-value (k2)',
+                             '        ks', 'p-value (ks)',
+                             '        sw', 'p-value (sw)']
         unorm_table.field_names = norm_header_names
 
         vectors = self.df.iteritems() if self.dim == "col" else self.df.iterrows()
