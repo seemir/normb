@@ -28,7 +28,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ---------------------------------------------------------------------------------------
-                    conducted   inconclusive     (i-rate)     conclusive     (c-rate)  
+                    conducted     conclusive     (i-rate)   inconclusive     (c-rate)  
 ---------------------------------------------------------------------------------------
     multivariate            6              5        0.833              1        0.167  
       univariate          400            360          0.9             40          0.1  

@@ -193,9 +193,9 @@ class NormalityBattery:
         summary = PrettyTable(vrules=2)
         summary.field_names = ['',
                                ' conducted',
-                               'inconclusive',
-                               '  (i-rate)',
                                '  conclusive',
+                               '  (i-rate)',
+                               'inconclusive',
                                '  (c-rate)'
                                ]
 
