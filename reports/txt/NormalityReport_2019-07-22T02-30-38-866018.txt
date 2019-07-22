@@ -28,7 +28,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.
 ---------------------------------------------------------------------------------------
-                    conducted     conclusive     (i-rate)   inconclusive     (c-rate)  
+                    conducted     conclusive     (c-rate)   inconclusive     (i-rate)  
 ---------------------------------------------------------------------------------------
     multivariate            6              1        0.167              5        0.833  
       univariate          400             15        0.037            385        0.963  
@@ -41,7 +41,7 @@ DEALINGS IN THE SOFTWARE.
          royston      104.722          0.354                                           
    henze-zirkler          1.0            1.0                                           
   doornik-hansen      190.581          0.672                                           
-          energy        5.288           0.46                                           
+          energy        5.288           0.43                                           
 ----------------------------------------------------------------------------------------------------------------------------------
              col           jb   p-value (jb)           k2   p-value (k2)           ks   p-value (ks)           sw   p-value (sw)  
 ----------------------------------------------------------------------------------------------------------------------------------

@@ -194,9 +194,9 @@ class NormalityBattery:
         summary.field_names = ['',
                                ' conducted',
                                '  conclusive',
-                               '  (i-rate)',
+                               '  (c-rate)',
                                'inconclusive',
-                               '  (c-rate)'
+                               '  (i-rate)'
                                ]
 
         summary.add_row(['  multivariate', '6', str(mn_pass), str(mn_pr), str(mn_fail), str(mn_fr)])
