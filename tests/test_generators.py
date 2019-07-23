@@ -3,10 +3,12 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.util.ds_generator import DescriptiveStatisticsGenerator
-from source.util.un_generator import UnivariateNormalityGenerator
-from source.util.mn_generator import MultivariateNormalityGenerator
+from source.exceptions.only_numeric_df_accepted import OnlyNumericDfAccepted
+from source.util.descriptive_statistics_generator import DescriptiveStatisticsGenerator
+from source.util.univariate_normality_generator import UnivariateNormalityGenerator
+from source.util.multivariate_normality_generator import MultivariateNormalityGenerator
 from source.util.abstract_generator import AbstractGenerator
+from source.util.result_generator import ResultGenerator
 from tests.test_setup import TestSetup
 import pandas as pd
 import pytest as pt
@@ -23,7 +25,8 @@ class TestGenerators(TestSetup):
         super(TestGenerators, self).setup()
         self.generators = [DescriptiveStatisticsGenerator,
                            UnivariateNormalityGenerator,
-                           MultivariateNormalityGenerator]
+                           MultivariateNormalityGenerator,
+                           ResultGenerator]
 
     def test_all_generators_are_subclass_of_abstract_generator(self):
         """
@@ -32,10 +35,15 @@ class TestGenerators(TestSetup):
         """
         for df in self.dfs.values():
             for generator in self.generators:
-                assert isinstance(generator(df), AbstractGenerator)
-                assert issubclass(generator(df).__class__, AbstractGenerator)
+                if generator != ResultGenerator:
+                    assert isinstance(generator(df), AbstractGenerator)
+                    assert issubclass(generator(df).__class__, AbstractGenerator)
+                else:
+                    assert isinstance(generator(df, mn='test', un='test'), AbstractGenerator)
+                    assert issubclass(generator(df, mn='test', un='test').__class__,
+                                      AbstractGenerator)
 
-    def test_typeerror_raised_when_non_pd_dataframe_passed_into_constructor(self):
+    def test_typeerror_raised_when_non_pd_data_frame_passed_into_constructor(self):
         """
         TypeError raised when non - pd.DataFrame passed into constructor
 
@@ -45,6 +53,19 @@ class TestGenerators(TestSetup):
             for invalid_df in invalid_dfs:
                 with pt.raises(TypeError):
                     generator(df=invalid_df)
+
+    def test_only_numeric_df_accepted_into_generators(self):
+        """
+        NonNumericDfNotAccepted raised when non numeric df passed into contructor
+
+        """
+        non_numeric_df = pd.DataFrame([[-1, 0.57127751], ['test', True]])
+        for generator in self.generators:
+            with pt.raises(OnlyNumericDfAccepted):
+                if generator != ResultGenerator:
+                    generator(non_numeric_df)
+                else:
+                    generator(non_numeric_df, mn='test', un='test')
 
     def test_typeerror_raised_when_dim_is_not_str(self):
         """

@@ -3,8 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.exceptions.base_class_exception import BaseClassCannotBeInstantiated
-from source.util.df_generator import DataFrameGenerator
+from source.exceptions.base_class_cannot_be_instantiated import BaseClassCannotBeInstantiated
+from source.util.dataframe_generator import DataFrameGenerator
 from rpy2.robjects import r, numpy2ri
 import numpy as np
 import gc

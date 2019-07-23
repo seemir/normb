@@ -3,9 +3,11 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.exceptions.base_class_exception import BaseClassCannotBeInstantiated
+from source.exceptions.base_class_cannot_be_instantiated import BaseClassCannotBeInstantiated
+from source.exceptions.only_numeric_df_accepted import OnlyNumericDfAccepted
 from bisect import bisect_left
 import pandas as pd
+import numpy as np
 import inspect
 
 
@@ -45,7 +47,69 @@ class AbstractGenerator:
         for arg, t in arg_dict.items():
             if not isinstance(arg, t):
                 raise TypeError(
-                    "Expected type '{}', got '{}' instead".format(t.__name__, type(arg).__name__))
+                    "expected type '{}', got '{}' instead".format(t.__name__, type(arg).__name__))
+
+    @staticmethod
+    def evaluate_numeric_df(df):
+        """
+
+        Parameters
+        ----------
+        df      : pandas.DataFrame
+
+        """
+        if df.shape[1] != df.select_dtypes(include=np.number).shape[1]:
+            raise OnlyNumericDfAccepted("only numeric df accepted: got {}".format(type(df)))
+
+    @staticmethod
+    def astrix(p_value):
+        """
+        Method for producing correct astrix notation given a p-value
+
+        Parameters
+        ----------
+        p_value   : float
+                    p-value to be looked-up
+        Returns
+        -------
+        Out     : string
+                  correct astrix notation
+
+        """
+        AbstractGenerator.evaluate_data_type({p_value: float})
+
+        sign_limit = [0.0001, 0.001, 0.01, 0.05, ]
+        sign_stars = ['****', '***', '**', '*', '']
+        return "{}{}".format(p_value, sign_stars[bisect_left(sign_limit, p_value)])
+
+    @staticmethod
+    def count_astrix(string):
+        """
+        Count the number of statistical tests that passed based on the astrix notation
+
+        Parameters
+        ----------
+        string  : str
+                  string with results
+
+        Returns
+        -------
+        Out     : int
+                  number of statistical tests that have passed
+
+        """
+        count = 0
+        temp = []
+        for char in string + ' ':
+            if char != '*':
+                if not temp:
+                    continue
+                else:
+                    count += 1
+                    temp = []
+            else:
+                temp.append(char)
+        return count
 
     def __init__(self, dim='col', digits=5, seed=90210, size=(30, 30)):
         """
@@ -76,26 +140,6 @@ class AbstractGenerator:
         self.digits = digits
         self.seed = seed
         self.size = size
-
-    def astrix(self, p_value):
-        """
-        Method for producing correct astrix notation given a p-value
-
-        Parameters
-        ----------
-        p_value   : float
-                    p-value to be looked-up
-        Returns
-        -------
-        Out     : string
-                  correct astrix notation
-
-        """
-        self.evaluate_data_type({p_value: float})
-
-        sign_limit = [0.0001, 0.001, 0.01, 0.05, ]
-        sign_stars = ['****', '***', '**', '*', '']
-        return "{}{}".format(p_value, sign_stars[bisect_left(sign_limit, p_value)])
 
     def __getmethods__(self):
         """

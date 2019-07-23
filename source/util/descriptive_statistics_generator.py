@@ -32,6 +32,7 @@ class DescriptiveStatisticsGenerator(AbstractGenerator):
         """
         super().__init__(dim=dim, digits=digits)
         self.evaluate_pd_dataframe(df)
+        self.evaluate_numeric_df(df)
         self.evaluate_data_type({dim: str, digits: int})
 
         self.df = df

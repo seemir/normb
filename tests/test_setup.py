@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.util.df_generator import DataFrameGenerator
+from source.util.dataframe_generator import DataFrameGenerator
 from source.normality_battery import NormalityBattery
 
 

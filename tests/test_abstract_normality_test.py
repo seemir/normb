@@ -4,7 +4,7 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from source.multivariate_norm.abstract_normality_test import AbstractNormalityTest
-from source.exceptions.base_class_exception import BaseClassCannotBeInstantiated
+from source.exceptions.base_class_cannot_be_instantiated import BaseClassCannotBeInstantiated
 from tests.test_setup import TestSetup
 import pytest as pt
 

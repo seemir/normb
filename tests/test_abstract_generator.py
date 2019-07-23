@@ -3,7 +3,7 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.exceptions.base_class_exception import BaseClassCannotBeInstantiated
+from source.exceptions.base_class_cannot_be_instantiated import BaseClassCannotBeInstantiated
 from source.util.abstract_generator import AbstractGenerator
 import pytest as pt
 
@@ -19,7 +19,7 @@ class TestAbstractGenerator:
         with pt.raises(BaseClassCannotBeInstantiated):
             AbstractGenerator()
 
-    def test_access_static_evaluate_pd_dataframe_method(self):
+    def test_access_static_evaluate_pd_data_frame_method(self):
         """
         Test that it is possible to access the static evaluate_pd_dataframe() method without
         instantiating the AbstractGenerator class

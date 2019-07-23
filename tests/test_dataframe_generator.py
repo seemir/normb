@@ -3,8 +3,8 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.util.df_generator import DataFrameGenerator
-from source.util.df_generator import AbstractGenerator
+from source.util.dataframe_generator import DataFrameGenerator
+from source.util.dataframe_generator import AbstractGenerator
 from tests.test_setup import TestSetup
 import pandas as pd
 import pytest as pt
@@ -64,7 +64,7 @@ class TestDataFrameGenerator(TestSetup):
             getattr(self.dfg, method)()
             assert getattr(DataFrameGenerator, method).call_count == 1
 
-    def test_typeerror_raised_when_non_pd_dataframe_passed_in_to_excel(self):
+    def test_typeerror_raised_when_non_pd_data_frame_passed_in_to_excel(self):
         """
         TypeError is thrown when non - pd.DataFrame object is passed in to_excel() method
 
@@ -74,7 +74,7 @@ class TestDataFrameGenerator(TestSetup):
             with pt.raises(TypeError):
                 self.dfg.to_excel(invalid_df)
 
-    def test_to_excel_produces_excel_file_with_dataframe(self):
+    def test_to_excel_produces_excel_file_with_data_frame(self):
         """
         Static to_excel() method produces excel file with dataframe
 

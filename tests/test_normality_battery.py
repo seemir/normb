@@ -3,8 +3,9 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
+from source.exceptions.only_numeric_df_accepted import OnlyNumericDfAccepted
 from source.normality_battery import NormalityBattery
-from source.util.df_generator import DataFrameGenerator
+from source.util.dataframe_generator import DataFrameGenerator
 from tests.test_setup import TestSetup
 import pytest as pt
 import pandas as pd
@@ -13,7 +14,7 @@ import os
 
 class TestNormalityBattery(TestSetup):
 
-    def test_all_normalitybattery_instances_are_of_type_normalitybattery(self):
+    def test_all_normality_battery_instances_are_of_type_normality_battery(self):
         """
         Test that all the normality battery instances are of type NormalityBattery()
 
@@ -30,7 +31,16 @@ class TestNormalityBattery(TestSetup):
         for df in dfs:
             pt.raises(TypeError, NormalityBattery, df)
 
-    def test_valueerror_raised_when_less_than_eight_observational_df_passed(self):
+    def test_only_numeric_df_acceptable(self):
+        """
+        Test that TypeError is raised if invalid data type is instantiated
+
+        """
+        non_numeric_df = pd.DataFrame([[-1, 0.57127751], ['test', True]])
+        with pt.raises(OnlyNumericDfAccepted):
+            NormalityBattery(non_numeric_df)
+
+    def test_value_error_raised_when_less_than_two_hundred_observational_df_passed(self):
         """
         Test that ValueError is raised when less than 20x20 observational df is passed through
         the NormalityBattery() class.
