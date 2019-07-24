@@ -194,8 +194,8 @@ class NormalityBattery:
             file.write('Version: ' + __version__ + '\n')
             file.write(__copyright__)
             file.write(summary + '\n')
-            file.write(self.multivariate_normality(digits) + '\n')
-            file.write(self.univariate_normality(dim, digits) + '\n')
+            file.write(mn + '\n')
+            file.write(un + '\n')
         file.close()
 
     def __getmethods__(self):
