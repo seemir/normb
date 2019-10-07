@@ -9,6 +9,7 @@ from source.util.dataframe_generator import DataFrameGenerator
 from tests.test_setup import TestSetup
 import pytest as pt
 import pandas as pd
+import shutil
 import os
 
 
@@ -61,19 +62,6 @@ class TestNormalityBattery(TestSetup):
                 if i == j:
                     pd.testing.assert_frame_equal(df, nb.df)
 
-    def test_results_methods(self):
-        """
-        Test that all the printing methods (descriptive_statistics,
-        univariate_normality etc.) produces str object with correct
-        parameters
-
-        """
-        for nb in self.nbs.values():
-            for method in nb.__getmethods__():
-                nb_results = getattr(nb, method)()
-                assert all(param in nb_results for param in self.params[method])
-                isinstance(nb_results, str)
-
     def test_os_error_in_print_report(self):
         """
         OSError raised when invalid file_dir is passed to print_report() method
@@ -102,6 +90,10 @@ class TestNormalityBattery(TestSetup):
         with open(self.file_dir + '/' + os.listdir(self.file_dir)[-1], 'r') as file:
             data = file.read().replace('\n', '')
             assert all(param in data for param in self.params['descriptive_statistics'])
+        try:
+            shutil.rmtree("reports")
+        except OSError:
+            pass
 
     def test_ds_not_included_in_report(self):
         """
@@ -113,3 +105,7 @@ class TestNormalityBattery(TestSetup):
         with open(self.file_dir + '/' + os.listdir(self.file_dir)[-1], 'r') as file:
             data = file.read().replace('\n', '')
             assert all(param not in data for param in self.params)
+        try:
+            shutil.rmtree("reports")
+        except OSError:
+            pass

@@ -3,17 +3,18 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.multivariate_norm.abstract_normality_test import AbstractNormalityTest
+from source.multivariate_norm.normality_test import NormalityTest
 from rpy2.robjects import r
+import pandas as pd
 import gc
 
 
-class Energy(AbstractNormalityTest):
+class Energy(NormalityTest):
     """
     Implements the the Energy E test for multivariate normality
     """
 
-    def __init__(self, df):
+    def __init__(self, df: pd.DataFrame):
         """
         Constructor / Initiate the class
         Parameters

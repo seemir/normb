@@ -4,11 +4,12 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from source.util.dataframe_generator import DataFrameGenerator
-from source.util.dataframe_generator import AbstractGenerator
+from source.util.dataframe_generator import Generator
 from tests.test_setup import TestSetup
 import pandas as pd
 import pytest as pt
 import numpy as np
+import shutil
 import os
 
 
@@ -19,18 +20,17 @@ class TestDataFrameGenerator(TestSetup):
         Test that DataFrameGenerator is subclass of AbstractGenerator
 
         """
-        assert isinstance(self.dfg, AbstractGenerator)
-        assert issubclass(self.dfg.__class__, AbstractGenerator)
+        assert isinstance(self.dfg, Generator)
+        assert issubclass(self.dfg.__class__, Generator)
 
-    def test_raise_typeerror_when_seed_is_not_int(self):
+    @pt.mark.parametrize("invalid_seed", [{}, [], (), 'test', True])
+    def test_raise_typeerror_when_seed_is_not_int(self, invalid_seed):
         """
         Test that TypeError is thrown when invalid datatype of seed is passed to
         DataFrameGenerator()
 
         """
-        invalid_seeds = [{}, [], (), 'test', True]
-        for seed in invalid_seeds:
-            pt.raises(TypeError, self.dfg, seed)
+        pt.raises(TypeError, self.dfg.__class__, invalid_seed)
 
     def seed_gets_configured(self):
         """
@@ -64,15 +64,14 @@ class TestDataFrameGenerator(TestSetup):
             getattr(self.dfg, method)()
             assert getattr(DataFrameGenerator, method).call_count == 1
 
-    def test_typeerror_raised_when_non_pd_data_frame_passed_in_to_excel(self):
+    @pt.mark.parametrize("invalid_df", [{}, [], (), 'test', True])
+    def test_typeerror_raised_when_non_pd_data_frame_passed_in_to_excel(self, invalid_df):
         """
         TypeError is thrown when non - pd.DataFrame object is passed in to_excel() method
 
         """
-        invalid_dfs = [{}, [], (), 'test', True]
-        for invalid_df in invalid_dfs:
-            with pt.raises(TypeError):
-                self.dfg.to_excel(invalid_df)
+        with pt.raises(TypeError):
+            self.dfg.to_excel(invalid_df)
 
     def test_to_excel_produces_excel_file_with_data_frame(self):
         """
@@ -85,6 +84,10 @@ class TestDataFrameGenerator(TestSetup):
             self.dfg.to_excel(df=input_df, file_dir=file_dir)
             saved_df = pd.read_excel(file_dir + '/' + os.listdir(file_dir)[-1], index_col=0)
             pd.testing.assert_frame_equal(saved_df, input_df)
+        try:
+            shutil.rmtree("reports")
+        except OSError:
+            pass
 
     def test_os_error_is_thrown_when_dir_cannot_be_created(self):
         """
@@ -96,18 +99,17 @@ class TestDataFrameGenerator(TestSetup):
         with pt.raises(OSError):
             self.dfg.to_excel(df=input_df, file_dir=invalid_file_dir)
 
-    def test_correct_dimensions_in_produced_df(self):
+    @pt.mark.parametrize("dim", [(30, 30), (30, 50), (50, 30)])
+    def test_correct_dimensions_in_produced_df(self, dim):
         """
         Shape of df produced are same as configured
 
         """
-        dims = [(30, 30), (30, 50), (50, 30)]
-        for dim in dims:
-            for method in self.dfg.__getmethods__():
-                df = DataFrameGenerator(seed=90210, size=dim)
-                df = getattr(df, method)()
-                assert df.shape == dim
-                assert np.prod(df.shape) == np.prod(dim)
+        for method in self.dfg.__getmethods__():
+            df = DataFrameGenerator(seed=90210, size=dim)
+            df = getattr(df, method)()
+            assert df.shape == dim
+            assert np.prod(df.shape) == np.prod(dim)
 
     def test_not_possible_to_configure_negative_dimensions(self):
         """
@@ -141,3 +143,7 @@ class TestDataFrameGenerator(TestSetup):
             input_df = getattr(self.dfg, method)(excel=True)
             saved_df = pd.read_excel(file_dir + '/' + os.listdir(file_dir)[-1], index_col=0)
             pd.testing.assert_frame_equal(saved_df, input_df)
+        try:
+            shutil.rmtree("reports")
+        except OSError:
+            pass

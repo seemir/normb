@@ -10,5 +10,5 @@ class BaseClassCannotBeInstantiated(Exception):
 
     """
 
-    def __init__(self, msg):
+    def __init__(self, msg: str):
         self.msg = msg

@@ -3,18 +3,19 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.util.abstract_generator import AbstractGenerator
-from source.util.dataframe_generator import DataFrameGenerator
+from source.util.generator import Generator
+from source.util.assertor import Assertor
 from prettytable import PrettyTable
+import pandas as pd
 
 
-class ResultGenerator(AbstractGenerator):
+class ResultGenerator(Generator):
     """
     Class that generates results from all statistical tests
 
     """
 
-    def __init__(self, df, mn, un, dim='col', digits=5):
+    def __init__(self, df: pd.DataFrame, mn: str, un: str, dim: str = 'col', digits: int = 5):
         """
         Constructor / Initiate the class
 
@@ -29,14 +30,14 @@ class ResultGenerator(AbstractGenerator):
         dim     : str
                   indicate whether one wants to test for normality along the columns 'col' or rows
                   'row', default is 'col'
-        digits  : integer
+        digits  : int
                   number of decimal places to round down
 
         """
         super().__init__(dim=dim, digits=digits)
-        self.evaluate_pd_dataframe(df)
-        self.evaluate_numeric_df(df)
-        DataFrameGenerator.evaluate_data_type({mn: str, un: str, dim: str, digits: int})
+        Assertor.evaluate_pd_dataframe(df)
+        Assertor.evaluate_numeric_df(df)
+        Assertor.evaluate_data_type({mn: str, un: str, dim: str, digits: int})
 
         self.df = df
         self.mn = mn

@@ -3,21 +3,21 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.multivariate_norm.abstract_normality_test import AbstractNormalityTest
+from source.multivariate_norm.normality_test import NormalityTest
 from source.exceptions.base_class_cannot_be_instantiated import BaseClassCannotBeInstantiated
 from tests.test_setup import TestSetup
 import pytest as pt
 
 
-class TestAbstractNormalityTest(TestSetup):
+class TestNormalityTest(TestSetup):
 
-    def test_abstract_normality_test_cannot_be_instantiated(self):
+    def test_normality_test_cannot_be_instantiated(self):
         """
         Test that the base class (AbstractNormalityTest) cannot be instantiated, i.e. an TypeError
         is thrown
 
         """
-        pt.raises(BaseClassCannotBeInstantiated, AbstractNormalityTest)
+        pt.raises(BaseClassCannotBeInstantiated, NormalityTest)
 
     def test_abstract_normality_test_cannot_be_instantiated_when_df_is_passed(self):
         """
@@ -27,4 +27,4 @@ class TestAbstractNormalityTest(TestSetup):
         """
         for df in self.dfs.values():
             with pt.raises(BaseClassCannotBeInstantiated):
-                AbstractNormalityTest(df=df)
+                NormalityTest(df=df)

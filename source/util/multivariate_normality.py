@@ -5,20 +5,22 @@ __email__ = 'samir.adrik@gmail.com'
 
 from source.multivariate_norm.doornik_hansen import DoornikHansen
 from source.multivariate_norm.henze_zirkler import HenzeZirkler
-from source.util.abstract_generator import AbstractGenerator
 from source.multivariate_norm.royston import Royston
 from source.multivariate_norm.mardia import Mardia
 from source.multivariate_norm.energy import Energy
+from source.util.generator import Generator
+from source.util.assertor import Assertor
 from prettytable import PrettyTable
+import pandas as pd
 
 
-class MultivariateNormalityGenerator(AbstractGenerator):
+class MultivariateNormality(Generator):
     """
     Class that generates multivariate normality results
 
     """
 
-    def __init__(self, df, digits=5):
+    def __init__(self, df: pd.DataFrame, digits: int = 5):
         """
         Constructor / Initiate the class
 
@@ -26,14 +28,14 @@ class MultivariateNormalityGenerator(AbstractGenerator):
         ----------
         df      : pandas.DataFrame
                   Dataframe for which one wants to generate / test
-        digits  : integer
+        digits  : int
                   number of decimal places to round down
 
         """
         super().__init__(digits=digits)
-        self.evaluate_pd_dataframe(df)
-        self.evaluate_numeric_df(df)
-        self.evaluate_data_type({digits: int})
+        Assertor.evaluate_pd_dataframe(df)
+        Assertor.evaluate_numeric_df(df)
+        Assertor.evaluate_data_type({digits: int})
 
         self.df = df
         self.digits = digits
@@ -49,7 +51,7 @@ class MultivariateNormalityGenerator(AbstractGenerator):
                   String of multivariate results
 
         """
-        self.evaluate_data_type({self.digits: int})
+        Assertor.evaluate_data_type({self.digits: int})
 
         multi_norm_table = PrettyTable(vrules=2, hrules=3)
         rnd, d = round, self.digits

@@ -4,19 +4,20 @@ __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
 from source.exceptions.base_class_cannot_be_instantiated import BaseClassCannotBeInstantiated
-from source.util.dataframe_generator import DataFrameGenerator
+from source.util.assertor import Assertor
 from rpy2.robjects import r, numpy2ri
+import pandas as pd
 import numpy as np
 import gc
 
 
-class AbstractNormalityTest:
+class NormalityTest:
     """
     Superclass for which all normality tests are subclassed.
 
     """
 
-    def __init__(self, df=None):
+    def __init__(self, df: pd.DataFrame = None):
         """
         Constructor / Initiate the class
 
@@ -26,11 +27,11 @@ class AbstractNormalityTest:
                   df to be analysed
 
         """
-        if type(self) == AbstractNormalityTest:
+        if type(self) == NormalityTest:
             raise BaseClassCannotBeInstantiated(
                 "base class '{}' cannot be instantiated".format(self.__class__.__name__))
 
-        DataFrameGenerator.evaluate_pd_dataframe(df)
+        Assertor.evaluate_pd_dataframe(df)
         r('if (!is.element("MVN", installed.packages()[,1])){ '
           'install.packages("MVN", dep = TRUE)}')
         self.df = numpy2ri.numpy2ri(np.array(df))

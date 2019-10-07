@@ -3,18 +3,20 @@
 __author__ = 'Samir Adrik'
 __email__ = 'samir.adrik@gmail.com'
 
-from source.util.abstract_generator import AbstractGenerator
+from source.util.generator import Generator
+from source.util.assertor import Assertor
 from prettytable import PrettyTable
 import scipy.stats as stats
+import pandas as pd
 
 
-class UnivariateNormalityGenerator(AbstractGenerator):
+class UnivariateNormality(Generator):
     """
     Class that generates univariate normality results
 
     """
 
-    def __init__(self, df, dim='col', digits=5):
+    def __init__(self, df: pd.DataFrame, dim: str = 'col', digits: int = 5):
         """
         Constructor / Initiate the class
 
@@ -22,17 +24,17 @@ class UnivariateNormalityGenerator(AbstractGenerator):
         ----------
         df      : pandas.DataFrame
                   Dataframe for which one wants to generate / test
-        dim     : string
+        dim     : str
                   indicate whether one wants to test for normality along the columns 'col' or rows
                   'row', default is 'col'
-        digits  : integer
+        digits  : int
                   number of decimal places to round down
 
         """
         super().__init__(dim=dim, digits=digits)
-        self.evaluate_pd_dataframe(df)
-        self.evaluate_numeric_df(df)
-        self.evaluate_data_type({dim: str, digits: int})
+        Assertor.evaluate_pd_dataframe(df)
+        Assertor.evaluate_numeric_df(df)
+        Assertor.evaluate_data_type({dim: str, digits: int})
 
         self.df = df
         self.dim = dim
