@@ -17,12 +17,12 @@ branches:
 
 # list of commands to run to setup the environment
 install:
+  - pip install --upgrade setuptools
   - pip install coverage
   - pip install codecov
   - pip install -r requirements.txt
 
 # the actual commands to run
-
 script:
   - pytest --cov=source/ tests/
 
